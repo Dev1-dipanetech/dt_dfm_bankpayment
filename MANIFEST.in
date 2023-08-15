@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include dt_dfm_bankpayment *.css
+recursive-include dt_dfm_bankpayment *.csv
+recursive-include dt_dfm_bankpayment *.html
+recursive-include dt_dfm_bankpayment *.ico
+recursive-include dt_dfm_bankpayment *.js
+recursive-include dt_dfm_bankpayment *.json
+recursive-include dt_dfm_bankpayment *.md
+recursive-include dt_dfm_bankpayment *.png
+recursive-include dt_dfm_bankpayment *.py
+recursive-include dt_dfm_bankpayment *.svg
+recursive-include dt_dfm_bankpayment *.txt
+recursive-exclude dt_dfm_bankpayment *.pyc
