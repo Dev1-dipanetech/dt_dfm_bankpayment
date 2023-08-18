@@ -1,0 +1,108 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-17 10:33:38.415480",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "ftp_server_address",
+  "column_break_ifupl",
+  "ftp_user",
+  "ftp_password",
+  "section_break_4mhg0",
+  "file_path",
+  "section_break_zuxnj",
+  "payment_type",
+  "party_type",
+  "column_break_hiws4",
+  "paid_from",
+  "paid_to"
+ ],
+ "fields": [
+  {
+   "fieldname": "ftp_server_address",
+   "fieldtype": "Data",
+   "label": "FTP Server Address"
+  },
+  {
+   "fieldname": "column_break_ifupl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ftp_user",
+   "fieldtype": "Data",
+   "label": "FTP User"
+  },
+  {
+   "fieldname": "ftp_password",
+   "fieldtype": "Data",
+   "label": "FTP Password"
+  },
+  {
+   "fieldname": "section_break_4mhg0",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "file_path",
+   "fieldtype": "Data",
+   "label": "File Path"
+  },
+  {
+   "fieldname": "section_break_zuxnj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "payment_type",
+   "fieldtype": "Select",
+   "label": "Payment Type",
+   "options": "Pay"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Select",
+   "label": "Party Type",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "column_break_hiws4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "paid_from",
+   "fieldtype": "Link",
+   "label": "Paid From",
+   "options": "Account"
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Link",
+   "label": "Paid To",
+   "options": "Account"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-08-17 10:33:38.415480",
+ "modified_by": "Administrator",
+ "module": "DT DFM Bank Payment",
+ "name": "DFM Bank Payment Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

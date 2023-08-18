@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-17 05:59:23.335621",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "dfm_bank_payment",
+  "section_break_g3hus",
+  "transfer_date",
+  "transfer_file_name",
+  "column_break_9qohw",
+  "receive_date",
+  "receive_file_name",
+  "section_break_ovl65",
+  "dfm_bank_payment_log_detail"
+ ],
+ "fields": [
+  {
+   "fieldname": "transfer_date",
+   "fieldtype": "Datetime",
+   "label": "Transfer Date"
+  },
+  {
+   "fieldname": "transfer_file_name",
+   "fieldtype": "Data",
+   "label": "Transfer File Name"
+  },
+  {
+   "fieldname": "column_break_9qohw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "receive_date",
+   "fieldtype": "Datetime",
+   "label": "Receive Date"
+  },
+  {
+   "fieldname": "receive_file_name",
+   "fieldtype": "Data",
+   "label": "Receive File Name"
+  },
+  {
+   "fieldname": "section_break_ovl65",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "dfm_bank_payment_log_detail",
+   "fieldtype": "Table",
+   "label": "DFM Bank Payment Log Detail",
+   "options": "DFM Bank Payment Log Detail"
+  },
+  {
+   "fieldname": "dfm_bank_payment",
+   "fieldtype": "Link",
+   "label": "DFM Bank Payment",
+   "options": "DFM Bank Payment"
+  },
+  {
+   "fieldname": "section_break_g3hus",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 14:28:58.042570",
+ "modified_by": "Administrator",
+ "module": "DT DFM Bank Payment",
+ "name": "DFM Bank Payment Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

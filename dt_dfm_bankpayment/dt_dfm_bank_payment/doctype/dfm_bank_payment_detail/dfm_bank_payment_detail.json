@@ -1,0 +1,187 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-16 19:46:55.767457",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "purchase_invoice",
+  "supplier",
+  "column_break_4ejd6",
+  "due_date",
+  "invoiced_amount",
+  "outstanding_amount",
+  "allocated_amount",
+  "section_break_2fvz7",
+  "supplier_bank",
+  "column_break_qlppu",
+  "supplier_account_no",
+  "supplier_bank_ifsc_code",
+  "section_break_h5g2a",
+  "supplier_address",
+  "supplier_address_line_1",
+  "supplier_address_line_2",
+  "column_break_4kpfe",
+  "supplier_city",
+  "supplier_zipcode",
+  "supplier_state",
+  "supplier_email",
+  "supplier_mobile",
+  "section_break_l4yjq"
+ ],
+ "fields": [
+  {
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Purchase Invoice",
+   "options": "Purchase Invoice",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "purchase_invoice.supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "purchase_invoice.grand_total",
+   "fieldname": "invoiced_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Invoiced Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "purchase_invoice.outstanding_amount",
+   "fieldname": "outstanding_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Outstanding Amount",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "purchase_invoice.due_date",
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "allocated_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Allocated Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4ejd6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_2fvz7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "supplier_bank",
+   "fieldtype": "Link",
+   "label": "Supplier Bank",
+   "options": "Bank Account"
+  },
+  {
+   "fieldname": "column_break_qlppu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "supplier_bank.bank_account_no",
+   "fieldname": "supplier_account_no",
+   "fieldtype": "Data",
+   "label": "Supplier Account No"
+  },
+  {
+   "fetch_from": "supplier_bank.ifsc_code",
+   "fieldname": "supplier_bank_ifsc_code",
+   "fieldtype": "Data",
+   "label": "Supplier Bank IFSC Code"
+  },
+  {
+   "fieldname": "section_break_h5g2a",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "purchase_invoice.supplier_address",
+   "fieldname": "supplier_address",
+   "fieldtype": "Link",
+   "label": "Supplier Address",
+   "options": "Address"
+  },
+  {
+   "fetch_from": "supplier_address.address_line1",
+   "fieldname": "supplier_address_line_1",
+   "fieldtype": "Data",
+   "label": "Supplier Address Line 1"
+  },
+  {
+   "fetch_from": "supplier_address.address_line2",
+   "fieldname": "supplier_address_line_2",
+   "fieldtype": "Data",
+   "label": "Supplier Address Line 2"
+  },
+  {
+   "fieldname": "column_break_4kpfe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "supplier_address.city",
+   "fieldname": "supplier_city",
+   "fieldtype": "Data",
+   "label": "Supplier City"
+  },
+  {
+   "fetch_from": "supplier_address.pincode",
+   "fieldname": "supplier_zipcode",
+   "fieldtype": "Data",
+   "label": "Supplier Zipcode"
+  },
+  {
+   "fetch_from": "supplier_address.state",
+   "fieldname": "supplier_state",
+   "fieldtype": "Data",
+   "label": "Supplier State"
+  },
+  {
+   "fetch_from": "supplier_address.email_id",
+   "fieldname": "supplier_email",
+   "fieldtype": "Data",
+   "label": "Supplier Email"
+  },
+  {
+   "fetch_from": "supplier_address.phone",
+   "fieldname": "supplier_mobile",
+   "fieldtype": "Data",
+   "label": "Supplier Mobile"
+  },
+  {
+   "fieldname": "section_break_l4yjq",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-08-18 12:30:10.837946",
+ "modified_by": "Administrator",
+ "module": "DT DFM Bank Payment",
+ "name": "DFM Bank Payment Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
