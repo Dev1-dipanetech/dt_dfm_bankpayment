@@ -3,121 +3,132 @@
 
 
 frappe.ui.form.on('DFM Bank Payment', {
-    get_outstanding_invoices: function(frm) {
+	refresh: function(frm) {
+		frm.set_query('purchase_invoice', function() {
+            return {
+                filters: {
+                    'status': ['in', ['Submitted', 'Unpaid', 'Overdue', 'Partly Paid']],
+					'company': frm.doc.company,
+					'supplier': frm.doc.supplier
+                }
+            };
+        });
 
-			
 
+        frm.set_query('company_bank_account', function() {
+            return {
+                filters: {
+					'company': frm.doc.company,
+                    'is_company_account': 1
+                }
+            };
+        });
+
+
+        frm.set_query('account_paid_from', function() {
+            return {
+                filters: {
+                    'account_type': ['in', ['Bank', 'Cash']],
+					'company': frm.doc.company,
+                    'is_group': 0,
+					'disabled': 0,
+
+                }
+            };
+        });
+
+
+        frm.set_query('account_paid_to', function() {
+            return {
+                filters: {
+                    'account_type': ['in', ['Payable']],
+					'company': frm.doc.company,
+                    'is_group': 0,
+					'disabled': 0,
+
+                }
+            };
+        });
+
+
+        frm.fields_dict.dfm_bank_payment_detail.grid.get_field('purchase_invoice').get_query = function(doc, cdt, cdn) {
+            var child = locals[cdt][cdn];
+            return {
+                filters: {
+                    'status': ['in', ['Submitted', 'Unpaid', 'Overdue', 'Partly Paid']],
+                    'company': frm.doc.company
+                }
+            };
+        };
+        
+
+        frm.fields_dict.dfm_bank_payment_detail.grid.get_field('supplier_bank').get_query = function(doc, cdt, cdn) {
+            var child = locals[cdt][cdn];
+            return {
+                filters: {
+                    'is_company_account': 0,
+					'company': child.company,
+                    'party_type': "Supplier",
+					'party': child.supplier
+                }
+            };
+        };
+
+	},
+
+	get_outstanding_invoices: function(frm) {
         frappe.call({
             method: 'dt_dfm_bankpayment.dt_dfm_bank_payment.doctype.dfm_bank_payment.dfm_bank_payment.get_outstanding_invoices',
             args: {
                 supplier: cur_frm.doc.supplier || '',
-                date: cur_frm.doc.date
+                due_date: cur_frm.doc.due_date,
+                company: cur_frm.doc.company || '',
+                purchase_invoice: cur_frm.doc.purchase_invoice || ''
             },
             callback: function(response) {
-                var invoices = response.message;
-
-                // Clear existing child table rows
-                frm.clear_table('dfm_bank_payment_detail');
-
-                // Populate child table with fetched invoices
-                $.each(invoices, function(i, invoice) {
+                var invoices = response.message.invoices;
+                var bank_account_name = response.message.bank_account_name;
+    
+                var existing_invoice_names = frm.doc.dfm_bank_payment_detail.map(row => row.purchase_invoice);
+    
+                // Update existing rows with data from fetched invoices
+                frm.doc.dfm_bank_payment_detail.forEach(row => {
+                    var matching_invoice = invoices.find(invoice => invoice.name === row.purchase_invoice);
+                    if (matching_invoice) {
+                        row.company = matching_invoice.company;
+                        row.supplier = matching_invoice.supplier;
+                        row.due_date = matching_invoice.due_date;
+                        row.invoiced_amount = matching_invoice.grand_total;
+                        row.outstanding_amount = matching_invoice.outstanding_amount;
+                        row.allocated_amount = matching_invoice.outstanding_amount;
+                        row.supplier_address = matching_invoice.supplier_address;
+                        row.supplier_bank = bank_account_name; // Set the bank account name
+                    }
+                });
+    
+                // Add new rows for invoices that are not already in the table
+                var new_invoices = invoices.filter(invoice => !existing_invoice_names.includes(invoice.name));
+                $.each(new_invoices, function(i, invoice) {
                     var row = frappe.model.add_child(cur_frm.doc, 'DFM Bank Payment Detail', 'dfm_bank_payment_detail');
                     row.purchase_invoice = invoice.name;
+                    row.company = invoice.company;
                     row.supplier = invoice.supplier;
-					row.due_date = invoice.due_date;
+                    row.due_date = invoice.due_date;
                     row.invoiced_amount = invoice.grand_total;
                     row.outstanding_amount = invoice.outstanding_amount;
-					row.allocated_amount = invoice.outstanding_amount;
-					row.supplier_address = invoice.supplier_address;
+                    row.allocated_amount = invoice.outstanding_amount;
+                    row.supplier_address = invoice.supplier_address;
+                    row.supplier_bank = bank_account_name; // Set the bank account name
                 });
-
+    
                 // Refresh child table and main form
                 cur_frm.refresh_field('dfm_bank_payment_detail');
                 cur_frm.refresh();
             }
         });
     },
-
-
-	// before_submit: function(frm) {
-    //     var batches = splitIntoBatches(frm.doc.dfm_bank_payment_detail, 3000000); // Split into batches of 30 lacs
-
-    //     var successCount = 0;
-    //     var errorCount = 0;
-
-    //     batches.forEach(function(batch, index) {
-    //         var fileData = getBatchData(batch);
-    //         var batchFileName = frm.doc.name + '_batch_' + (index + 1) + '.txt';
-
-    //         // Download the text file
-    //         var blob = new Blob([fileData], { type: 'text/plain' });
-    //         var url = URL.createObjectURL(blob);
-    //         var link = document.createElement('a');
-    //         link.href = url;
-    //         link.download = batchFileName;
-    //         link.style.display = 'none';
-    //         document.body.appendChild(link);
-    //         link.click();
-    //         document.body.removeChild(link);
-
-    //         setTimeout(function() {
-    //             frappe.call({
-    //                 method: 'dt_dfm_bankpayment.dt_dfm_bank_payment.doctype.dfm_bank_payment.dfm_bank_payment.generate_text',
-    //                 args: {
-    //                     file_name: batchFileName
-    //                 },
-    //                 callback: function(response) {
-    //                     if (response.message) {
-    //                         successCount++;
-	// 						console.log(batch)
-
-
-	// 						setTimeout(function() {
-	// 							// Create a new document in DFM Bank Payment Log
-	// 							frappe.call({
-	// 								method: 'dt_dfm_bankpayment.dt_dfm_bank_payment.doctype.dfm_bank_payment.dfm_bank_payment.create_log_document',
-	// 								args: {
-	// 									dfm_bank_payment: frm.doc.name,
-	// 									transfer_file_name: batchFileName,
-	// 									batch_details: batch
-	// 								},
-	// 								callback: function(log_response) {
-	// 									if (log_response.message) {
-	// 										// Log document created successfully
-	// 										frappe.msgprint("Log document created successfully");
-	// 									} else {
-	// 										// Error creating log document
-	// 										frappe.msgprint("Error creating log document");
-	// 									}
-
-	// 								}
-	// 							});
-	// 						}, 2000);
-
-
-    //                     } else {
-    //                         errorCount++;
-    //                     }
-
-
-	// 					// Check if all batches are processed
-	// 					if (successCount + errorCount === batches.length) {
-	// 						if (errorCount === 0) {
-	// 							frappe.msgprint("All batch files are sent to the FTP Server");
-	// 						} else {
-	// 							frappe.msgprint(`Sent ${successCount} batch files to the FTP Server. ${errorCount} batch files failed.`);
-	// 						}
-	// 					}
-    //                 }
-    //             });
-    //         }, 3000);
-    //     });
-    // }
-
-
-
-
-
+    
+	
 
 	before_submit: function(frm) {
         var batches = splitIntoBatches(frm.doc.dfm_bank_payment_detail, 3000000); // Split into batches of 30 lacs
@@ -157,7 +168,7 @@ frappe.ui.form.on('DFM Bank Payment', {
 								args: {
 									dfm_bank_payment: frm.doc.name,
 									transfer_file_name: batchFileName,
-									batch_details: batch
+									batch_details: JSON.stringify(batch),
 								},
 								callback: function(log_response) {
 									if (log_response.message) {
@@ -231,7 +242,7 @@ function getBatchData(batch, fileName, doc) {
 
     batchData += 'H~DUMMY~~~~' + fileName + '~' + '\n' +
         'B~' + batch_length + '~' + batch_amount + '~' + '20130625_HAS03' + '~' +
-        (frappe.datetime.str_to_user(doc.date).replace(/-/g, '/') || '') +
+        // (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
         '~NETPAY' + '\n';
 
     batch.forEach(function(row) {
@@ -239,9 +250,9 @@ function getBatchData(batch, fileName, doc) {
             'NEFT~' +
             (row.allocated_amount || '') +
             '~' +
-            (frappe.datetime.str_to_user(doc.date).replace(/-/g, '/') || '') +
+            (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
             '~' +
-            (frappe.datetime.str_to_user(doc.date).replace(/-/g, '/') || '') +
+            (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
             '~~~~~~' +
             'M~~' +
             (row.supplier || '') +
@@ -283,3 +294,36 @@ function getTotalAllocatedAmount(batch) {
     });
     return totalAmount.toFixed(2);
 }
+
+
+
+
+
+
+frappe.ui.form.on('DFM Bank Payment Detail', {
+    supplier: function(frm, cdt, cdn) {
+        var child = locals[cdt][cdn];
+        
+        // Fetch the supplier_bank field
+        frappe.call({
+            method: "frappe.client.get_value",
+            args: {
+                doctype: "Bank Account",
+                filters: {
+                    'is_company_account': 0,
+					'company': child.company,
+                    'party_type': "Supplier",
+					'party': child.supplier,
+                    'is_default': 1
+                },
+                fieldname: "name"
+            },
+            callback: function(response) {
+                var name = response.message.name;
+                
+                // Update the supplier_bank field in the child table
+                frappe.model.set_value(cdt, cdn, "supplier_bank", name);
+            }
+        });
+    }
+});

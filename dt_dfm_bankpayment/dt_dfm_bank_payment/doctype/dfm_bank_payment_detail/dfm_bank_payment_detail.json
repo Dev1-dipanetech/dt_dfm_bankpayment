@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "purchase_invoice",
+  "company",
   "supplier",
   "column_break_4ejd6",
   "due_date",
@@ -74,6 +75,7 @@
    "label": "Due Date"
   },
   {
+   "fetch_from": "purchase_invoice.outstanding_amount",
    "fieldname": "allocated_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -86,13 +88,15 @@
   },
   {
    "fieldname": "section_break_2fvz7",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Bank"
   },
   {
    "fieldname": "supplier_bank",
    "fieldtype": "Link",
    "label": "Supplier Bank",
-   "options": "Bank Account"
+   "options": "Bank Account",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_qlppu",
@@ -112,7 +116,8 @@
   },
   {
    "fieldname": "section_break_h5g2a",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Address"
   },
   {
    "fetch_from": "purchase_invoice.supplier_address",
@@ -170,12 +175,19 @@
   {
    "fieldname": "section_break_l4yjq",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-08-18 12:30:10.837946",
+ "modified": "2023-08-21 15:44:04.271521",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Detail",

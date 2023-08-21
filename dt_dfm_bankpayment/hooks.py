@@ -129,7 +129,15 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
+
+    "cron": {
+        "* * * * *":  [
+            "dt_dfm_bankpayment.dt_dfm_bankpayment.tasks.cron"
+        ]
+    },
+
+
 #	"all": [
 #		"dt_dfm_bankpayment.tasks.all"
 #	],
@@ -145,7 +153,7 @@ app_license = "MIT"
 #	"monthly": [
 #		"dt_dfm_bankpayment.tasks.monthly"
 #	],
-# }
+}
 
 # Testing
 # -------

@@ -10,16 +10,77 @@ from frappe.model.document import Document
 
 class DFMBankPayment(Document):
     def before_save(self):
-        for amount in self.dfm_bank_payment_detail:
-            if amount.allocated_amount > 5000000:
-                frappe.throw("Allocated amount cannot be more than 5000000 for this invoice {}".format(amount.purchase_invoice))
 
+        filter_company = self.company
+        
+        # List to store rows with different company values
+        rows_with_different_company = []
+
+        # Compare the company value in each row with the filter_company value
+        for item in self.dfm_bank_payment_detail:
+            if item.company != filter_company:
+                rows_with_different_company.append(item.purchase_invoice)  # Add the purchase invoice to the list
+
+        # If there are rows with different company values, raise an error
+        if rows_with_different_company:
+            error_message = "The following rows in dfm_bank_payment_detail have different company values: {}".format(
+                ', '.join(rows_with_different_company)
+            )
+            frappe.throw(error_message)
+
+
+        for amount in self.dfm_bank_payment_detail:
+            if amount.allocated_amount is None or amount.allocated_amount <= 0:
+                frappe.throw("Allocated amount must be greater than 0 for this invoice {}".format(amount.purchase_invoice))
+            elif amount.allocated_amount > 5000000:
+                frappe.throw("Allocated amount cannot be more than 5000000 for this invoice {}".format(amount.purchase_invoice))
 
         for item in self.dfm_bank_payment_detail:
             existing_bank_payment_logs = frappe.get_all('DFM Bank Payment Log Detail',
                 filters={
                     'purchase_invoice': item.purchase_invoice,
-                    'status': ['not in', ['Cancelled']],
+                    'status': ['not in', ['Rejected by Bank']],
+                },
+                fields=['parent']
+            )
+            
+            if existing_bank_payment_logs:
+                bank_payment_log_docs = [bp.parent for bp in existing_bank_payment_logs]
+                bank_payment_log_links = ', '.join(f'<a href="/app/dfm-bank-payment-log/{bp}" target="_blank">{bp}</a>' for bp in bank_payment_log_docs)
+                frappe.throw(f"Line item {item.purchase_invoice} is already in process or completed in DFM Bank Payment Log(s): {bank_payment_log_links}")
+                
+    
+    
+    def before_submit(self):
+
+        filter_company = self.company
+        
+        # List to store rows with different company values
+        rows_with_different_company = []
+
+        # Compare the company value in each row with the filter_company value
+        for item in self.dfm_bank_payment_detail:
+            if item.company != filter_company:
+                rows_with_different_company.append(item.purchase_invoice)  # Add the purchase invoice to the list
+
+        # If there are rows with different company values, raise an error
+        if rows_with_different_company:
+            error_message = "The following rows in dfm_bank_payment_detail have different company values: {}".format(
+                ', '.join(rows_with_different_company)
+            )
+            frappe.throw(error_message)
+
+        for amount in self.dfm_bank_payment_detail:
+            if amount.allocated_amount is None or amount.allocated_amount <= 0:
+                frappe.throw("Allocated amount must be greater than 0 for this invoice {}".format(amount.purchase_invoice))
+            elif amount.allocated_amount > 5000000:
+                frappe.throw("Allocated amount cannot be more than 5000000 for this invoice {}".format(amount.purchase_invoice))
+
+        for item in self.dfm_bank_payment_detail:
+            existing_bank_payment_logs = frappe.get_all('DFM Bank Payment Log Detail',
+                filters={
+                    'purchase_invoice': item.purchase_invoice,
+                    'status': ['not in', ['Rejected by Bank']],
                 },
                 fields=['parent']
             )
@@ -35,28 +96,33 @@ class DFMBankPayment(Document):
 
 
 
-
 @frappe.whitelist()
-def get_outstanding_invoices(supplier, date):
+def get_outstanding_invoices(supplier, due_date, company, purchase_invoice):
     filters = {
-        'due_date': ['<=', date],
+        'due_date': ['<=', due_date],
         'status': ['in', ['Submitted', 'Unpaid', 'Overdue', 'Partly Paid']],
-		'outstanding_amount': ['<=', 5000000]
+        'outstanding_amount': ['<=', 5000000]
     }
     
     if supplier:
         filters['supplier'] = supplier
+        
+    if company:
+        filters['company'] = company
+
+    if purchase_invoice:
+        filters['name'] = purchase_invoice
     
     invoices = frappe.get_all('Purchase Invoice', 
         filters=filters, 
-        fields=['name', 'supplier', 'due_date', 'grand_total', 'outstanding_amount','supplier_address']
+        fields=['name', 'company', 'supplier', 'due_date', 'grand_total', 'outstanding_amount','supplier_address']
     )
     
     # Fetch the list of Purchase Invoices already present in DFM Bank Payment Log Detail
     existing_invoices = frappe.get_all('DFM Bank Payment Log Detail',
         filters={
              	'parenttype': 'DFM Bank Payment Log',
-		     	'status': ['not in', ['Cancelled']],
+		     	'status': ['not in', ['Rejected by Bank']],
             },
         fields=['purchase_invoice']
     )
@@ -66,7 +132,20 @@ def get_outstanding_invoices(supplier, date):
     # Filter out the Purchase Invoices that are already present in DFM Bank Payment Log Detail
     invoices_to_consider = [invoice for invoice in invoices if invoice.name not in existing_invoice_names]
     
-    return invoices_to_consider
+    # Fetch the name of the Bank Account based on filters
+    bank_account_name = frappe.db.get_value('Bank Account',
+        filters={
+            'is_company_account': 0,
+            'company': company,
+            'party_type': "Supplier",
+            'party': supplier,
+            'is_default': 1
+        },
+        fieldname='name'
+    )
+    
+    # Return invoices to consider along with bank_account_name
+    return {'invoices': invoices_to_consider, 'bank_account_name': bank_account_name}
 
 
 
@@ -75,30 +154,45 @@ def get_outstanding_invoices(supplier, date):
 
 @frappe.whitelist()
 def generate_text(file_name, filters=None):
-    # Fetch settings from DFM Bank Payment Settings doctype
-    settings = frappe.get_single("DFM Bank Payment Settings")
-    file_path = settings.file_path
-    server_address = settings.ftp_server_address
-    user = settings.ftp_user
-    password = settings.ftp_password
+    try:
+        # Fetch settings from DFM Bank Payment Settings doctype
+        settings = frappe.get_single("DFM Bank Payment Settings")
+        file_path = settings.file_path
+        server_address = settings.ftp_server_address
+        user = settings.ftp_user
+        password = settings.ftp_password
 
-    # Construct the full file path
-    file_path = os.path.join(file_path, file_name)
+        # Construct the full file path
+        file_path = os.path.join(file_path, file_name)
 
-    # Upload the file to the FTP server
-    ftp = FTP(server_address)
-    ftp.login(user=user, passwd=password)
+        # Upload the file to the FTP server
+        ftp = FTP(server_address)
+        ftp.login(user=user, passwd=password)
 
-    with open(file_path, 'rb') as file:
-        ftp.storbinary('STOR ' + file_name, file)
+        with open(file_path, 'rb') as file:
+            ftp.storbinary('STOR ' + file_name, file)
 
-    ftp.quit()
+        ftp.quit()
 
-    # Read the contents of the file
-    with open(file_path, 'r') as file:
-        file_content = file.read()
+        # Read the contents of the file
+        with open(file_path, 'r') as file:
+            file_content = file.read()
 
-    return True
+        # Create a new File record in Frappe
+        file_doc = frappe.get_doc({
+            "doctype": "File",
+            "file_name": file_name,
+            "content": file_content,
+            "is_private": 1,  # Adjust this based on your requirement
+            "folder": "Home"  # Specify the folder where you want to store the file
+        })
+        file_doc.insert()
+
+        return True
+
+    except Exception as e:
+        frappe.msgprint(f"Error generating or uploading file: {e}")
+        return False
 
 
 
@@ -110,24 +204,52 @@ def generate_text(file_name, filters=None):
 def create_log_document(dfm_bank_payment, transfer_file_name, batch_details):
     try:
         batch_details_json = json.loads(batch_details)
+
+        dfm_bank_payment_doc = frappe.get_doc("DFM Bank Payment", dfm_bank_payment)
+        company = dfm_bank_payment_doc.company
+        company_bank_account = dfm_bank_payment_doc.company_bank_account
+        account_paid_from = dfm_bank_payment_doc.account_paid_from
+        account_paid_to = dfm_bank_payment_doc.account_paid_to
                               
         log_doc = frappe.new_doc("DFM Bank Payment Log")
         log_doc.dfm_bank_payment = dfm_bank_payment
+        log_doc.company = company
+        log_doc.company_bank_account = company_bank_account
+        log_doc.account_paid_from = account_paid_from
+        log_doc.account_paid_to = account_paid_to
         log_doc.transfer_file_name = transfer_file_name
         log_doc.transfer_date = frappe.utils.now_datetime()
+        
+        # Attach the file if it exists in the File doctype
+        existing_file = frappe.get_doc("File", {"file_name": transfer_file_name})
+        if existing_file:
+            file_name = "/private/files/" + existing_file.file_name
+            log_doc.set("transfer_file", file_name)
+            frappe.db.commit()  # Commit the changes to ensure attachment is saved
+        
         log_doc.insert()
 
         for detail in batch_details_json:
             log_detail = log_doc.append("dfm_bank_payment_log_detail", {})
             log_detail.purchase_invoice = detail["purchase_invoice"]
+            log_detail.company = detail["company"]
             log_detail.supplier = detail["supplier"]
+            log_detail.due_date = detail["due_date"]
             log_detail.invoiced_amount = detail["invoiced_amount"]
             log_detail.outstanding_amount = detail["outstanding_amount"]
             log_detail.allocated_amount = detail["allocated_amount"]
-            log_detail.status = "In Process"
+            log_detail.supplier_bank = detail["supplier_bank"]
+            log_detail.supplier_address = detail["supplier_address"]
+            log_detail.status = "In Process at Bank"
         log_doc.save()
 
         frappe.msgprint(f"Log document created for batch {transfer_file_name}")
+
+        # Delete the stored temporary file
+        temp_file_path = os.path.join("/private/files/temp", transfer_file_name)
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+
         return True
 
     except Exception as e:

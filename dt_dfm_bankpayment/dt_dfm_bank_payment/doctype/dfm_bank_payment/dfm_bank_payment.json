@@ -7,10 +7,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "filter_section",
   "supplier",
-  "date",
+  "purchase_invoice",
   "get_outstanding_invoices",
+  "column_break_jkalc",
+  "company",
+  "due_date",
   "section_break_mqv7i",
+  "company_bank_account",
+  "column_break_qrj3m",
+  "account_paid_from",
+  "account_paid_to",
+  "section_break_tcp3v",
   "dfm_bank_payment_detail",
   "amended_from"
  ],
@@ -20,14 +29,6 @@
    "fieldtype": "Link",
    "label": "Supplier",
    "options": "Supplier"
-  },
-  {
-   "default": "now",
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Date",
-   "reqd": 1
   },
   {
    "fieldname": "get_outstanding_invoices",
@@ -45,7 +46,8 @@
   },
   {
    "fieldname": "section_break_mqv7i",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Accounts"
   },
   {
    "fieldname": "dfm_bank_payment_detail",
@@ -53,12 +55,72 @@
    "label": "DFM Bank Payment Detail",
    "options": "DFM Bank Payment Detail",
    "reqd": 1
+  },
+  {
+   "fieldname": "filter_section",
+   "fieldtype": "Section Break",
+   "label": "Filters"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_jkalc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "now",
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Due Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Link",
+   "label": "Purchase Invoice",
+   "options": "Purchase Invoice"
+  },
+  {
+   "fetch_from": "company_bank_account.account",
+   "fieldname": "account_paid_from",
+   "fieldtype": "Link",
+   "label": "Account Paid From",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "account_paid_to",
+   "fieldtype": "Link",
+   "label": "Account Paid To",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_qrj3m",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_tcp3v",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "company_bank_account",
+   "fieldtype": "Link",
+   "label": "Company Bank Account",
+   "options": "Bank Account",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-16 20:34:43.693186",
+ "modified": "2023-08-21 12:51:41.867996",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment",

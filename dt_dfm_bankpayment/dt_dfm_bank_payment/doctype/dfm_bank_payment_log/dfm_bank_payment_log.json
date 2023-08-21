@@ -9,11 +9,16 @@
  "field_order": [
   "dfm_bank_payment",
   "section_break_g3hus",
-  "transfer_date",
+  "company",
+  "company_bank_account",
+  "column_break_jexrh",
+  "account_paid_from",
+  "account_paid_to",
+  "section_break_92piu",
   "transfer_file_name",
-  "column_break_9qohw",
-  "receive_date",
-  "receive_file_name",
+  "column_break_m1axk",
+  "transfer_file",
+  "transfer_date",
   "section_break_ovl65",
   "dfm_bank_payment_log_detail"
  ],
@@ -21,26 +26,13 @@
   {
    "fieldname": "transfer_date",
    "fieldtype": "Datetime",
-   "label": "Transfer Date"
+   "label": "Transfer Date",
+   "reqd": 1
   },
   {
    "fieldname": "transfer_file_name",
    "fieldtype": "Data",
    "label": "Transfer File Name"
-  },
-  {
-   "fieldname": "column_break_9qohw",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "receive_date",
-   "fieldtype": "Datetime",
-   "label": "Receive Date"
-  },
-  {
-   "fieldname": "receive_file_name",
-   "fieldtype": "Data",
-   "label": "Receive File Name"
   },
   {
    "fieldname": "section_break_ovl65",
@@ -55,17 +47,69 @@
   {
    "fieldname": "dfm_bank_payment",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "DFM Bank Payment",
-   "options": "DFM Bank Payment"
+   "options": "DFM Bank Payment",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_g3hus",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Accounts"
+  },
+  {
+   "fieldname": "transfer_file",
+   "fieldtype": "Attach",
+   "label": "Transfer File"
+  },
+  {
+   "fieldname": "company_bank_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company Bank Account",
+   "options": "Bank Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_jexrh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "account_paid_from",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account Paid From",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "account_paid_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Account Paid To",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_92piu",
+   "fieldtype": "Section Break",
+   "label": "Transfer File Details"
+  },
+  {
+   "fieldname": "column_break_m1axk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-17 14:28:58.042570",
+ "modified": "2023-08-21 16:47:34.660082",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Log",
