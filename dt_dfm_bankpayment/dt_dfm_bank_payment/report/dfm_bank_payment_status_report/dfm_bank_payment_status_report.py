@@ -13,7 +13,14 @@ def execute(filters=None):
             "fieldname": "posting_date",
             "label": _("Posting Date"),
             "fieldtype": "Date",
-            "width": 100
+            "width": 130
+        },
+        {
+            "fieldname": "dfm_bank_payment_log",
+            "label": _("DFM Bank Payment Log"),
+            "fieldtype": "Link",
+            "options": "DFM Bank Payment Log",
+            "width": 180
         },
         {
             "fieldname": "party_type",
@@ -26,7 +33,7 @@ def execute(filters=None):
             "label": _("Party"),
             "fieldtype": "Link",
             "options": "Supplier",
-            "width": 120
+            "width": 150
         },
         {
             "fieldname": "payable_account",
@@ -85,6 +92,12 @@ def execute(filters=None):
             "width": 150
         },
         {
+            "fieldname": "transfer_file_url",
+            "label": _("Transfer File URL"),
+            "fieldtype": "HTML",
+            "width": 200
+        },
+        {
             "fieldname": "receive_date",
             "label": _("Receive Date"),
             "fieldtype": "Date",
@@ -97,11 +110,17 @@ def execute(filters=None):
             "width": 150
         },
         {
+            "fieldname": "receive_file_url",
+            "label": _("Receive File URL"),
+            "fieldtype": "HTML",
+            "width": 200
+        },
+        {
             "fieldname": "payment_entry",
             "label": _("Payment Entry"),
             "fieldtype": "Link",
             "options": "Payment Entry",
-            "width": 150
+            "width": 180
         },
         {
             "fieldname": "status",
@@ -122,6 +141,7 @@ def execute(filters=None):
     query = """
         SELECT 
             bpl.creation as posting_date,
+            bpl.name as dfm_bank_payment_log,
             "Supplier" as party_type,
             bpld.supplier as party,
             bpl.account_paid_to as payable_account,
@@ -133,8 +153,10 @@ def execute(filters=None):
             CASE WHEN bpld.payment_entry IS NOT NULL THEN per.outstanding_amount ELSE bpld.outstanding_amount END as outstanding_amount,
             bpl.transfer_date as transfer_date,
             bpl.transfer_file_name as transfer_file_name,
+            CONCAT('<a href="', bpl.transfer_file, '" target="_blank">', bpl.transfer_file, '</a>') as transfer_file_url,
             bpld.receive_date as receive_date,
             bpld.receive_file_name as receive_file_name,
+            CONCAT('<a href="', bpld.receive_file, '" target="_blank">', bpld.receive_file, '</a>') as receive_file_url,
             bpld.payment_entry as payment_entry,
             bpld.status as status,
             bpl.company as company
@@ -145,8 +167,32 @@ def execute(filters=None):
     """
 
     if filters:
-        # You can add any filters here based on your requirements
-        pass
+        query += " WHERE 1=1"  # Start with a valid WHERE clause
+
+        if filters.get("company"):
+            query += f" AND bpl.company = '{filters.get('company')}'"
+
+        if filters.get("posting_date"):
+            query += f" AND DATE(bpl.creation) <= '{filters.get('posting_date')}'"
+
+        if filters.get("dfm_bank_payment_log"):
+            query += f" AND bpl.name = '{filters.get('dfm_bank_payment_log')}'"
+
+        if filters.get("supplier"):
+            query += f" AND bpld.supplier = '{filters.get('supplier')}'"
+
+        if filters.get("purchase_invoice"):
+            query += f" AND bpld.purchase_invoice = '{filters.get('purchase_invoice')}'"
+
+        if filters.get("payment_entry"):
+            query += f" AND bpld.payment_entry = '{filters.get('payment_entry')}'"
+
+        if filters.get("payable_account"):
+            query += f" AND bpl.account_paid_to = '{filters.get('payable_account')}'"
+
+        if filters.get("status"):
+            query += f" AND bpld.status = '{filters.get('status')}'"
+
 
     data = frappe.db.sql(query, filters, as_dict=1)
     return columns, data

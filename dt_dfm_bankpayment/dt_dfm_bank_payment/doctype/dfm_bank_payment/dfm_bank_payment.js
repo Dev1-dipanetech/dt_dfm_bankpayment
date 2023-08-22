@@ -163,24 +163,28 @@ frappe.ui.form.on('DFM Bank Payment', {
 					},
 					callback: function(response) {
 						if (response.message) {
-							frappe.call({
-								method: 'dt_dfm_bankpayment.dt_dfm_bank_payment.doctype.dfm_bank_payment.dfm_bank_payment.create_log_document',
-								args: {
-									dfm_bank_payment: frm.doc.name,
-									transfer_file_name: batchFileName,
-									batch_details: JSON.stringify(batch),
-								},
-								callback: function(log_response) {
-									if (log_response.message) {
-										frappe.msgprint("Log document created successfully");
-									} else {
-										frappe.msgprint("Error creating log document");
-									}
 
-									currentIndex++;
-									processNextBatch(); // Process the next batch
-								}
-							});
+                            setTimeout(function() {
+                                frappe.call({
+                                    method: 'dt_dfm_bankpayment.dt_dfm_bank_payment.doctype.dfm_bank_payment.dfm_bank_payment.create_log_document',
+                                    args: {
+                                        dfm_bank_payment: frm.doc.name,
+                                        transfer_file_name: batchFileName,
+                                        batch_details: JSON.stringify(batch),
+                                    },
+                                    callback: function(log_response) {
+                                        if (log_response.message) {
+                                            frappe.msgprint("Log document created successfully");
+                                        } else {
+                                            frappe.msgprint("Error creating log document");
+                                        }
+
+                                        currentIndex++;
+                                        processNextBatch(); // Process the next batch
+                                    }
+                                });
+                            }, 1000);
+
 						} else {
 							frappe.msgprint("Error generating text file");
 							currentIndex++;
@@ -242,7 +246,7 @@ function getBatchData(batch, fileName, doc) {
 
     batchData += 'H~DUMMY~~~~' + fileName + '~' + '\n' +
         'B~' + batch_length + '~' + batch_amount + '~' + '20130625_HAS03' + '~' +
-        // (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
+        (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
         '~NETPAY' + '\n';
 
     batch.forEach(function(row) {

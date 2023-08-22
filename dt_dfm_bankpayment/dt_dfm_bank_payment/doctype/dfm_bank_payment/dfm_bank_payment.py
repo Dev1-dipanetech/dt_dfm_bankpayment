@@ -213,6 +213,7 @@ def create_log_document(dfm_bank_payment, transfer_file_name, batch_details):
                               
         log_doc = frappe.new_doc("DFM Bank Payment Log")
         log_doc.dfm_bank_payment = dfm_bank_payment
+        log_doc.posting_date = frappe.utils.nowdate()
         log_doc.company = company
         log_doc.company_bank_account = company_bank_account
         log_doc.account_paid_from = account_paid_from
