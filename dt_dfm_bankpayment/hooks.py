@@ -133,7 +133,7 @@ scheduler_events = {
 
     "cron": {
         "0 15 * * *":  [
-            "dt_dfm_bankpayment.dt_dfm_bankpayment.tasks.cron"
+            "dt_dfm_bankpayment.tasks.cron"
         ]
     },
 
