@@ -50,11 +50,11 @@
    "label": "Accounts"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "dfm_bank_payment_detail",
    "fieldtype": "Table",
    "label": "DFM Bank Payment Detail",
-   "options": "DFM Bank Payment Detail",
-   "reqd": 1
+   "options": "DFM Bank Payment Detail"
   },
   {
    "fieldname": "filter_section",
@@ -120,7 +120,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-21 12:51:41.867996",
+ "modified": "2023-08-24 13:33:06.101242",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment",

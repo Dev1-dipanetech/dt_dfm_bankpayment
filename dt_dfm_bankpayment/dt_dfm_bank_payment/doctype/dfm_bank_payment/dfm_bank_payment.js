@@ -74,7 +74,22 @@ frappe.ui.form.on('DFM Bank Payment', {
             };
         };
 
+
+        if (frm.doc.__islocal) {
+            frm.toggle_reqd('dfm_bank_payment_detail', true);
+        } 
+        else {
+            if (frm.doc.docstatus == 0) {
+                frm.toggle_reqd('dfm_bank_payment_detail', true);
+            } 
+            else {
+                frm.toggle_reqd('dfm_bank_payment_detail', false);
+            }
+        }
+
 	},
+
+    
 
 	get_outstanding_invoices: function(frm) {
         frappe.call({

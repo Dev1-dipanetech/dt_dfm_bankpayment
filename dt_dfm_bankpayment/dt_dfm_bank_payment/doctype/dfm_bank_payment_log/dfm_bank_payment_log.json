@@ -28,13 +28,15 @@
   {
    "fieldname": "transfer_date",
    "fieldtype": "Datetime",
-   "label": "Transfer Date",
+   "label": "E2B Transfer Date",
+   "read_only": 1,
    "reqd": 1
   },
   {
    "fieldname": "transfer_file_name",
    "fieldtype": "Data",
-   "label": "Transfer File Name"
+   "label": "E2B Transfer File Name",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_ovl65",
@@ -44,7 +46,8 @@
    "fieldname": "dfm_bank_payment_log_detail",
    "fieldtype": "Table",
    "label": "DFM Bank Payment Log Detail",
-   "options": "DFM Bank Payment Log Detail"
+   "options": "DFM Bank Payment Log Detail",
+   "read_only": 1
   },
   {
    "fieldname": "dfm_bank_payment",
@@ -52,6 +55,7 @@
    "in_list_view": 1,
    "label": "DFM Bank Payment",
    "options": "DFM Bank Payment",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -62,7 +66,8 @@
   {
    "fieldname": "transfer_file",
    "fieldtype": "Attach",
-   "label": "Transfer File"
+   "label": "E2B Transfer File",
+   "read_only": 1
   },
   {
    "fieldname": "company_bank_account",
@@ -70,6 +75,7 @@
    "in_list_view": 1,
    "label": "Company Bank Account",
    "options": "Bank Account",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -82,6 +88,7 @@
    "in_list_view": 1,
    "label": "Account Paid From",
    "options": "Account",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -90,12 +97,13 @@
    "in_list_view": 1,
    "label": "Account Paid To",
    "options": "Account",
+   "read_only": 1,
    "reqd": 1
   },
   {
    "fieldname": "section_break_92piu",
    "fieldtype": "Section Break",
-   "label": "Transfer File Details"
+   "label": "E2B Transfer File Details"
   },
   {
    "fieldname": "column_break_m1axk",
@@ -106,6 +114,7 @@
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -116,12 +125,13 @@
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Posting Date",
+   "read_only": 1,
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-22 19:44:55.202998",
+ "modified": "2023-08-24 19:18:22.495072",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Log",

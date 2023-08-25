@@ -85,17 +85,17 @@
   {
    "fieldname": "receive_date",
    "fieldtype": "Datetime",
-   "label": "Receive Date"
+   "label": "B2E Receive Date"
   },
   {
    "fieldname": "receive_file_name",
    "fieldtype": "Data",
-   "label": "Receive File Name"
+   "label": "B2E Receive File Name"
   },
   {
    "fieldname": "receive_file",
    "fieldtype": "Attach",
-   "label": "Receive File"
+   "label": "B2E Receive File"
   },
   {
    "fieldname": "company",
@@ -201,7 +201,7 @@
   {
    "fieldname": "section_break_yvhav",
    "fieldtype": "Section Break",
-   "label": "Receive File Details"
+   "label": "B2E Receive File Details"
   },
   {
    "fieldname": "payment_entry",
@@ -213,7 +213,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-08-21 17:34:02.042135",
+ "modified": "2023-08-24 19:19:14.405296",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Log Detail",

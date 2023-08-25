@@ -81,37 +81,37 @@ def execute(filters=None):
         },
         {
             "fieldname": "transfer_date",
-            "label": _("Transfer Date"),
+            "label": _("E2B Transfer Date"),
             "fieldtype": "Date",
             "width": 130
         },
         {
             "fieldname": "transfer_file_name",
-            "label": _("Transfer File Name"),
+            "label": _("E2B Transfer File Name"),
             "fieldtype": "Data",
             "width": 150
         },
         {
             "fieldname": "transfer_file_url",
-            "label": _("Transfer File URL"),
+            "label": _("E2B Transfer File URL"),
             "fieldtype": "HTML",
             "width": 200
         },
         {
             "fieldname": "receive_date",
-            "label": _("Receive Date"),
+            "label": _("B2E Receive Date"),
             "fieldtype": "Date",
             "width": 130
         },
         {
             "fieldname": "receive_file_name",
-            "label": _("Receive File Name"),
+            "label": _("B2E Receive File Name"),
             "fieldtype": "Data",
             "width": 150
         },
         {
             "fieldname": "receive_file_url",
-            "label": _("Receive File URL"),
+            "label": _("B2E Receive File URL"),
             "fieldtype": "HTML",
             "width": 200
         },

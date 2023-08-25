@@ -256,3 +256,58 @@ def create_log_document(dfm_bank_payment, transfer_file_name, batch_details):
     except Exception as e:
         frappe.msgprint(f"Error creating log document: {e}")
         return False
+
+
+
+
+
+
+
+
+@frappe.whitelist()
+def get_linked_payments(purchase_invoice):
+    linked_payments = []
+
+    # Query linked payments based on purchase_invoice in the child table
+    dfm_payments = frappe.get_all("DFM Bank Payment Detail", filters={"purchase_invoice": purchase_invoice}, fields=["parent", "purchase_invoice"])
+    
+    for payment in dfm_payments:
+        linked_payments.append({"parent": payment.parent, "purchase_invoice": payment.purchase_invoice})
+
+    return linked_payments
+
+
+
+
+
+
+@frappe.whitelist()
+def delete_linked_rows(purchase_invoice, parent):
+    try:
+        # Find the parent DFM Bank Payment document
+        dfm_bank_payment = frappe.get_doc("DFM Bank Payment", parent)
+
+        # Check if the parent DFM Bank Payment is submitted
+        if dfm_bank_payment.docstatus == 1:
+            # Create a list to store rows to be removed
+            rows_to_remove = []
+
+            # Identify rows to be removed and add to the list
+            for row in dfm_bank_payment.dfm_bank_payment_detail:
+                if row.purchase_invoice == purchase_invoice:
+                    rows_to_remove.append(row)
+
+            # Remove identified rows from the child table
+            for row in rows_to_remove:
+                dfm_bank_payment.dfm_bank_payment_detail.remove(row)
+
+            # Save the parent document
+            dfm_bank_payment.save()
+            return True
+        else:
+            frappe.msgprint("Parent DFM Bank Payment document is not submitted. Cannot delete linked rows.")
+            return False
+
+    except Exception as e:
+        frappe.log_error(e)
+        return False
