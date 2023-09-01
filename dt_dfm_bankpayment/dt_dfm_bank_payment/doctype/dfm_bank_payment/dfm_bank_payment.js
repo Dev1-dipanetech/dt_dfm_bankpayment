@@ -67,7 +67,7 @@ frappe.ui.form.on('DFM Bank Payment', {
             return {
                 filters: {
                     'is_company_account': 0,
-					'company': child.company,
+					// 'company': child.company,
                     'party_type': "Supplier",
 					'party': child.supplier
                 }
@@ -77,10 +77,20 @@ frappe.ui.form.on('DFM Bank Payment', {
 
         if (frm.doc.__islocal) {
             frm.toggle_reqd('dfm_bank_payment_detail', true);
+
+            if (!frm.doc.dfm_bank_payment_detail || frm.doc.dfm_bank_payment_detail.length === 0) {
+                // Add a blank row to the 'dfm_bank_payment_detail' table field
+                frm.fields_dict['dfm_bank_payment_detail'].grid.add_new_row();
+            }    
         } 
         else {
             if (frm.doc.docstatus == 0) {
                 frm.toggle_reqd('dfm_bank_payment_detail', true);
+
+                if (!frm.doc.dfm_bank_payment_detail || frm.doc.dfm_bank_payment_detail.length === 0) {
+                    // Add a blank row to the 'dfm_bank_payment_detail' table field
+                    frm.fields_dict['dfm_bank_payment_detail'].grid.add_new_row();
+                }    
             } 
             else {
                 frm.toggle_reqd('dfm_bank_payment_detail', false);
