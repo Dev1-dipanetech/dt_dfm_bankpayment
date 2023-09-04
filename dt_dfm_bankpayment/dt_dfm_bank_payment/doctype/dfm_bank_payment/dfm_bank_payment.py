@@ -96,6 +96,65 @@ class DFMBankPayment(Document):
 
 
 
+# @frappe.whitelist()
+# def get_outstanding_invoices(supplier, due_date, company, purchase_invoice):
+#     filters = {
+#         'due_date': ['<=', due_date],
+#         'status': ['in', ['Submitted', 'Unpaid', 'Overdue', 'Partly Paid']],
+#         'outstanding_amount': ['<=', 5000000]
+#     }
+    
+#     if supplier:
+#         filters['supplier'] = supplier
+        
+#     if company:
+#         filters['company'] = company
+
+#     if purchase_invoice:
+#         filters['name'] = purchase_invoice
+    
+#     invoices = frappe.get_all('Purchase Invoice', 
+#         filters=filters, 
+#         fields=['name', 'company', 'supplier', 'due_date', 'grand_total', 'outstanding_amount','supplier_address']
+#     )
+    
+#     # Fetch the list of Purchase Invoices already present in DFM Bank Payment Log Detail
+#     existing_invoices = frappe.get_all('DFM Bank Payment Log Detail',
+#         filters={
+#              	'parenttype': 'DFM Bank Payment Log',
+# 		     	'status': ['not in', ['Rejected by Bank']],
+#             },
+#         fields=['purchase_invoice']
+#     )
+    
+#     existing_invoice_names = [invoice.purchase_invoice for invoice in existing_invoices]
+    
+#     # Filter out the Purchase Invoices that are already present in DFM Bank Payment Log Detail
+#     invoices_to_consider = [invoice for invoice in invoices if invoice.name not in existing_invoice_names]
+    
+#     # Fetch the name of the Bank Account based on filters
+#     bank_account_name = frappe.db.get_value('Bank Account',
+#         filters={
+#             'is_company_account': 0,
+#             # 'company': company,
+#             'party_type': "Supplier",
+#             'party': supplier,
+#             'is_default': 1
+#         },
+#         fieldname='name'
+#     )
+    
+#     # Return invoices to consider along with bank_account_name
+#     return {'invoices': invoices_to_consider, 'bank_account_name': bank_account_name}
+
+
+
+
+
+
+
+
+
 @frappe.whitelist()
 def get_outstanding_invoices(supplier, due_date, company, purchase_invoice):
     filters = {
@@ -133,19 +192,42 @@ def get_outstanding_invoices(supplier, due_date, company, purchase_invoice):
     invoices_to_consider = [invoice for invoice in invoices if invoice.name not in existing_invoice_names]
     
     # Fetch the name of the Bank Account based on filters
-    bank_account_name = frappe.db.get_value('Bank Account',
-        filters={
-            'is_company_account': 0,
-            # 'company': company,
-            'party_type': "Supplier",
-            'party': supplier,
-            'is_default': 1
-        },
-        fieldname='name'
-    )
+    bank_account_name = None  # Initialize with None
+    
+    # Check if the supplier has a default bank account, if not, pick any one
+    if supplier:
+        bank_account_name = frappe.db.get_value('Bank Account',
+            filters={
+                'is_company_account': 0,
+                'party_type': "Supplier",
+                'party': supplier,
+                'is_default': 1
+            },
+            fieldname='name'
+        )
+    
+    # If a default bank account is not found, pick any one
+    if not bank_account_name:
+        bank_account = frappe.get_all('Bank Account',
+            filters={
+                'is_company_account': 0,
+                'party_type': "Supplier",
+                'party': supplier
+            },
+            fields=['name'],
+            limit=1  # Limit to 1 record
+        )
+        if bank_account:
+            bank_account_name = bank_account[0].name
     
     # Return invoices to consider along with bank_account_name
     return {'invoices': invoices_to_consider, 'bank_account_name': bank_account_name}
+
+
+
+
+
+
 
 
 
