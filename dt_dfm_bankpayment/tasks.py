@@ -59,12 +59,12 @@ def cron():
 
                 print("Line {}: Parts: {}".format(line_number, parts))  # Print line number and parts for debugging
 
-                purchase_invoice = parts[48]
+                purchase_invoice = parts[29]
                 supplier = parts[10]
                 paid_amount = float(parts[7])
                 processing_type = parts[49]
                 reference_no = parts[3]
-                reference_date_str = parts[4]  # Assuming parts[4] contains the date string "19-AUG-15"
+                reference_date_str = parts[4]
                 reference_date = getdate(reference_date_str)
 
                 

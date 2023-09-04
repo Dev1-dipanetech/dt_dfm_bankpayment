@@ -277,7 +277,7 @@ function getBatchData(batch, fileName, doc) {
     batch.forEach(function(row) {
         batchData += 'D~~' +
             'NEFT~' +
-            (row.allocated_amount || '') +
+            (row.allocated_amount.toFixed(2)  || '') +
             '~' +
             (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
             '~' +
@@ -292,9 +292,9 @@ function getBatchData(batch, fileName, doc) {
             '~' +
             (row.supplier_account_no || '') +
             '~~~' +
-            (row.supplier_address_1 || '') +
+            (row.supplier_address_line_1 || '') +
             '~' +
-            (row.supplier_address_2 || '') +
+            (row.supplier_address_line_2 || '') +
             '~~~~' +
             (row.supplier_city || '') +
             '~' +
@@ -306,9 +306,11 @@ function getBatchData(batch, fileName, doc) {
             '~' +
             (row.supplier_mobile || '') +
             '~' +
-            (row.purchase_invoice || '') +
+            // (row.purchase_invoice || '') +
             '~~~~' +
             '\n';
+        
+        batchData += 'E~' + (row.purchase_invoice || '') + '~~~~~~~~~' + '\n';
     });
 
     batchData += 'T~' + batch_length + '~' + batch_amount;
