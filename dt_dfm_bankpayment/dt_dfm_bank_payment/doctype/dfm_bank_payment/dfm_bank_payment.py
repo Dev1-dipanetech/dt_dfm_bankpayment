@@ -198,7 +198,7 @@ def get_outstanding_invoices(supplier, due_date, company, purchase_invoice):
     if supplier:
         bank_account_name = frappe.db.get_value('Bank Account',
             filters={
-                'is_company_account': 0,
+                # 'is_company_account': 0,
                 'party_type': "Supplier",
                 'party': supplier,
                 'is_default': 1
@@ -210,7 +210,7 @@ def get_outstanding_invoices(supplier, due_date, company, purchase_invoice):
     if not bank_account_name:
         bank_account = frappe.get_all('Bank Account',
             filters={
-                'is_company_account': 0,
+                # 'is_company_account': 0,
                 'party_type': "Supplier",
                 'party': supplier
             },

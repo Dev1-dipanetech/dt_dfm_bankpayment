@@ -66,7 +66,7 @@ frappe.ui.form.on('DFM Bank Payment', {
             var child = locals[cdt][cdn];
             return {
                 filters: {
-                    'is_company_account': 0,
+                    // 'is_company_account': 0,
 					// 'company': child.company,
                     'party_type': "Supplier",
 					'party': child.supplier
