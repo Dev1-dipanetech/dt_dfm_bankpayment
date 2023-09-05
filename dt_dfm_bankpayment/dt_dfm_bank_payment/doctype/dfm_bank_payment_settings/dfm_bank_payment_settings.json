@@ -7,13 +7,15 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "ftp_setup_section",
   "ftp_server_address",
   "column_break_ifupl",
   "ftp_user",
   "ftp_password",
   "section_break_4mhg0",
   "file_path",
-  "section_break_zuxnj"
+  "section_break_zuxnj",
+  "dfm_bank_payment_gl_setup"
  ],
  "fields": [
   {
@@ -37,7 +39,8 @@
   },
   {
    "fieldname": "section_break_4mhg0",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "File Path Setup"
   },
   {
    "fieldname": "file_path",
@@ -46,13 +49,25 @@
   },
   {
    "fieldname": "section_break_zuxnj",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "GL Setup"
+  },
+  {
+   "fieldname": "dfm_bank_payment_gl_setup",
+   "fieldtype": "Table",
+   "label": "DFM Bank Payment GL Setup",
+   "options": "DFM Bank Payment GL Setup"
+  },
+  {
+   "fieldname": "ftp_setup_section",
+   "fieldtype": "Section Break",
+   "label": "FTP Setup"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-08-22 17:32:10.686308",
+ "modified": "2023-09-04 18:10:04.194626",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Settings",

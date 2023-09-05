@@ -229,6 +229,41 @@ def get_outstanding_invoices(supplier, due_date, company, purchase_invoice):
 
 
 
+@frappe.whitelist()
+def get_supplier_bank_account(supplier):
+    # Check if there is a default bank account for the supplier
+    default_bank_account_name = frappe.get_value('Bank Account',
+        filters={
+            'party_type': "Supplier",
+            'party': supplier,
+            'is_default': 1  # Check for default bank account
+        },
+        fieldname='name'
+    )
+
+    if default_bank_account_name:
+        return default_bank_account_name
+
+    # If no default bank account is set, pick any available bank account for the supplier
+    bank_account_name = frappe.db.sql("""
+        SELECT name
+        FROM `tabBank Account`
+        WHERE party_type = 'Supplier'
+        AND party = %s
+        LIMIT 1
+    """, supplier, as_dict=True)
+
+    if bank_account_name:
+        return bank_account_name[0].name
+
+    # If no bank account is found, return None or raise an exception based on your requirements
+    return None  # You can customize this based on your needs
+
+
+
+
+
+
 
 
 

@@ -149,6 +149,25 @@ frappe.ui.form.on('DFM Bank Payment', {
                 // Refresh child table and main form
                 cur_frm.refresh_field('dfm_bank_payment_detail');
                 cur_frm.refresh();
+
+
+                // Make another frappe.call to fetch and set the bank account for each supplier
+                frm.doc.dfm_bank_payment_detail.forEach(row => {
+                    if (!row.supplier_bank) {
+                        frappe.call({
+                            method: 'dt_dfm_bankpayment.dt_dfm_bank_payment.doctype.dfm_bank_payment.dfm_bank_payment.get_supplier_bank_account',
+                            args: {
+                                supplier: row.supplier || ''
+                            },
+                            callback: function(bank_response) {
+                                var supplier_bank_account = bank_response.message;
+                                row.supplier_bank = supplier_bank_account;
+                                // cur_frm.refresh_field('dfm_bank_payment_detail');
+                            }
+                        });
+                    }
+                });
+
             }
         });
     },
