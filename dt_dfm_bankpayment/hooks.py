@@ -1,7 +1,7 @@
 from . import __version__ as app_version
 
 app_name = "dt_dfm_bankpayment"
-app_title = "DT DFM Bank Payment"
+app_title = "DT DFM"
 app_publisher = "Dipane Technologies Pvt Ltd"
 app_description = "Bank Payment System"
 app_email = "contact@dipanetech.com"

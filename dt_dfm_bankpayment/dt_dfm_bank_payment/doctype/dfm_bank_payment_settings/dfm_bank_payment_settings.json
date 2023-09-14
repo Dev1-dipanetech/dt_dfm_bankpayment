@@ -12,8 +12,6 @@
   "column_break_ifupl",
   "ftp_user",
   "ftp_password",
-  "section_break_4mhg0",
-  "file_path",
   "section_break_zuxnj",
   "dfm_bank_payment_gl_setup"
  ],
@@ -38,16 +36,6 @@
    "label": "FTP Password"
   },
   {
-   "fieldname": "section_break_4mhg0",
-   "fieldtype": "Section Break",
-   "label": "File Path Setup"
-  },
-  {
-   "fieldname": "file_path",
-   "fieldtype": "Data",
-   "label": "File Path"
-  },
-  {
    "fieldname": "section_break_zuxnj",
    "fieldtype": "Section Break",
    "label": "GL Setup"
@@ -67,7 +55,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-09-04 18:10:04.194626",
+ "modified": "2023-09-14 11:50:37.954840",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Settings",

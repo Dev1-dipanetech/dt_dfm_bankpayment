@@ -203,7 +203,8 @@ frappe.ui.form.on('DFM Bank Payment', {
 				frappe.call({
 					method: 'dt_dfm_bankpayment.dt_dfm_bank_payment.doctype.dfm_bank_payment.dfm_bank_payment.generate_text',
 					args: {
-						file_name: batchFileName
+						file_name: batchFileName,
+                        file_content: fileData 
 					},
 					callback: function(response) {
 						if (response.message) {

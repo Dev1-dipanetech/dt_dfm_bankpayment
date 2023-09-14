@@ -1,3 +1,5 @@
+
+
 # import os
 # import frappe
 # import time
@@ -53,6 +55,8 @@
 #                 file_content = file.readlines()
 
 #             print("File name: {}".format(file_name))
+#             print("File content: {}".format(file_content))
+
 
 #             for line_number, line in enumerate(file_content, start=1):
 #                 parts = line.strip().split('~')
@@ -143,6 +147,53 @@
 #                                     dfm_bank_payment_detail_doc.save()
 
 #                                 payment_entry.submit()
+
+
+
+
+
+
+#                                 # After successful submission of Payment Entry
+#                                 if payment_entry.docstatus == 1:
+#                                     # Fetch DFM Bank Payment Settings document
+#                                     dfm_bank_payment_settings = frappe.get_single("DFM Bank Payment Settings")
+                                    
+#                                     # Iterate through dfm_bank_payment_gl_setup rows
+#                                     for gl_setup_row in dfm_bank_payment_settings.dfm_bank_payment_gl_setup:
+#                                         if gl_setup_row.company == company and gl_setup_row.branch_office == account_paid_from:
+#                                             # Create a Journal Entry
+#                                             journal_entry = frappe.new_doc("Journal Entry")
+#                                             journal_entry.voucher_type = "Journal Entry" 
+#                                             journal_entry.posting_date = frappe.utils.nowdate()
+#                                             journal_entry.company = gl_setup_row.company
+#                                             journal_entry.user_remarks = "Bank Payment Journal Entry" 
+
+#                                             journal_entry.append("accounts", {
+#                                                 "account": gl_setup_row.branch_office,  
+#                                                 "debit_in_account_currency": paid_amount, 
+#                                             })
+
+#                                             journal_entry.append("accounts", {
+#                                                 "account": gl_setup_row.corporate_office, 
+#                                                 "credit_in_account_currency": paid_amount,  
+#                                             })
+
+#                                             # Save and submit the Journal Entry
+#                                             journal_entry.insert(ignore_permissions=True)
+#                                             journal_entry.submit()
+#                                             frappe.db.commit()
+
+#                                             print("Created Journal Entry for Payment Entry: {}, Supplier: {}".format(payment_entry.name, supplier))
+                                        
+#                                         else:
+#                                             # Skip creating Journal Entry for this row
+#                                             print("Skipped Journal Entry creation for Company: {} and Branch Office: {}".format(company, account_paid_from))
+
+
+
+
+
+
 
 #                                 frappe.delete_doc("File", file_name)
 #                                 frappe.db.commit()
@@ -269,6 +320,14 @@
 
 
 
+
+
+
+
+
+
+
+
 import os
 import frappe
 import time
@@ -299,9 +358,6 @@ def cron():
     # List all files in the FTP server directory
     file_list = ftp.nlst()
 
-    # Specify the local directory where files will be downloaded
-    local_directory = settings.file_path  # Change to your local directory path
-
     # Get the list of existing file names in DFM Bank Payment Log
     existing_file_names = frappe.get_all("DFM Bank Payment Log", filters={}, fields=["transfer_file_name"])
     existing_file_names = [file["transfer_file_name"] for file in existing_file_names]
@@ -313,17 +369,26 @@ def cron():
             print("File name {} already exists in DFM Bank Payment Log. Skipping file...".format(file_name))
             continue
 
-        local_file_path = os.path.join(local_directory, file_name)
+        # local_file_path = os.path.join(local_directory, file_name)
         try:
-            with open(local_file_path, 'wb') as local_file:
-                ftp.retrbinary('RETR ' + file_name, local_file.write)
-            print("Downloaded file: {}".format(file_name))
+            # with open(local_file_path, 'wb') as local_file:
+            #     ftp.retrbinary('RETR ' + file_name, local_file.write)
+            # print("Downloaded file: {}".format(file_name))
 
-            # Read the file content from the downloaded file
-            with open(local_file_path, 'r') as file:
-                file_content = file.readlines()
+            # # Read the file content from the downloaded file
+            # with open(local_file_path, 'r') as file:
+            #     file_content = file.readlines()
+
+            # print("File name: {}".format(file_name))
+
+            file_content = []
+            ftp.retrlines('RETR ' + file_name, file_content.append)
+            # file_content = "\n".join(file_content)
 
             print("File name: {}".format(file_name))
+            print("File content:")
+            print(file_content)
+
 
             for line_number, line in enumerate(file_content, start=1):
                 parts = line.strip().split('~')
@@ -390,14 +455,11 @@ def cron():
                                 # Check if the file_name already exists in File doctype
                                 file_doc = None  # Initialize the variable here
                                 if file_name not in file_in_erp:
-                                    with open(local_file_path, 'rb') as file:
-                                        file_content = file.read()
-
                                     # Create a new File record in Frappe
                                     file_doc = frappe.get_doc({
                                         "doctype": "File",
                                         "file_name": file_name,
-                                        "content": file_content,
+                                        "content": "\n".join(file_content),
                                         "is_private": 1,  # Adjust this based on your requirement
                                         "folder": "Home"  # Specify the folder where you want to store the file
                                     })
@@ -487,14 +549,11 @@ def cron():
                             # Check if the file_name already exists in File doctype
                             file_doc = None  # Initialize the variable here
                             if file_name not in file_in_erp:
-                                with open(local_file_path, 'rb') as file:
-                                    file_content = file.read()
-
                                 # Create a new File record in Frappe
                                 file_doc = frappe.get_doc({
                                     "doctype": "File",
                                     "file_name": file_name,
-                                    "content": file_content,
+                                    "content": "\n".join(file_content),
                                     "is_private": 1,  # Adjust this based on your requirement
                                     "folder": "Home"  # Specify the folder where you want to store the file
                                 })
@@ -526,14 +585,11 @@ def cron():
                         # Check if the file_name already exists in File doctype
                         file_doc = None  # Initialize the variable here
                         if file_name not in file_in_erp:
-                            with open(local_file_path, 'rb') as file:
-                                file_content = file.read()
-
                             # Create a new File record in Frappe
                             file_doc = frappe.get_doc({
                                 "doctype": "File",
                                 "file_name": file_name,
-                                "content": file_content,
+                                "content": "\n".join(file_content),
                                 "is_private": 1,  # Adjust this based on your requirement
                                 "folder": "Home"  # Specify the folder where you want to store the file
                             })
