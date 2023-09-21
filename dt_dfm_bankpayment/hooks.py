@@ -133,7 +133,7 @@ doctype_js = {"Purchase Invoice" : "public/js/purchase_invoice.js"}
 scheduler_events = {
 
     "cron": {
-        "* 15 * * *":  [
+        "10 17 * * *":  [
             "dt_dfm_bankpayment.tasks.cron"
         ]
     },

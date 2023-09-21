@@ -386,8 +386,8 @@ def cron():
             # file_content = "\n".join(file_content)
 
             print("File name: {}".format(file_name))
-            print("File content:")
-            print(file_content)
+            # print("File content:")
+            # print(file_content)
 
 
             for line_number, line in enumerate(file_content, start=1):
@@ -490,44 +490,48 @@ def cron():
                                     # Iterate through dfm_bank_payment_gl_setup rows
                                     for gl_setup_row in dfm_bank_payment_settings.dfm_bank_payment_gl_setup:
                                         if gl_setup_row.company == company and gl_setup_row.branch_office == account_paid_from:
-                                            # Create a Journal Entry
-                                            journal_entry = frappe.new_doc("Journal Entry")
-                                            journal_entry.voucher_type = "Journal Entry" 
-                                            journal_entry.posting_date = frappe.utils.nowdate()
-                                            journal_entry.company = gl_setup_row.company
-                                            journal_entry.user_remarks = "Bank Payment Journal Entry" 
+                                            try:
+                                                # Create a Journal Entry
+                                                journal_entry = frappe.new_doc("Journal Entry")
+                                                journal_entry.voucher_type = "Journal Entry"
+                                                journal_entry.posting_date = frappe.utils.nowdate()
+                                                journal_entry.company = gl_setup_row.company
+                                                journal_entry.user_remarks = "Bank Payment Journal Entry"
 
-                                            journal_entry.append("accounts", {
-                                                "account": gl_setup_row.branch_office,  
-                                                "debit_in_account_currency": paid_amount, 
-                                            })
+                                                journal_entry.append("accounts", {
+                                                    "account": gl_setup_row.branch_office,
+                                                    "debit_in_account_currency": paid_amount,
+                                                })
 
-                                            journal_entry.append("accounts", {
-                                                "account": gl_setup_row.corporate_office, 
-                                                "credit_in_account_currency": paid_amount,  
-                                            })
+                                                journal_entry.append("accounts", {
+                                                    "account": gl_setup_row.corporate_office,
+                                                    "credit_in_account_currency": paid_amount,
+                                                })
 
-                                            # Save and submit the Journal Entry
-                                            journal_entry.insert(ignore_permissions=True)
-                                            journal_entry.submit()
-                                            frappe.db.commit()
+                                                # Save and submit the Journal Entry
+                                                journal_entry.insert(ignore_permissions=True)
+                                                journal_entry.submit()
+                                                frappe.db.commit()
 
-                                            print("Created Journal Entry for Payment Entry: {}, Supplier: {}".format(payment_entry.name, supplier))
+                                                print("Created Journal Entry for Payment Entry: {}, Supplier: {}".format(payment_entry.name, supplier))
+
+                                            except Exception as e:
+                                                print("Error occurred while creating Journal Entry: {}".format(str(e)))
+
                                         
                                         else:
                                             # Skip creating Journal Entry for this row
                                             print("Skipped Journal Entry creation for Company: {} and Branch Office: {}".format(company, account_paid_from))
-
-
-
-
-
+                                            continue
+                                else:
+                                    continue
 
 
                                 frappe.delete_doc("File", file_name)
                                 frappe.db.commit()
 
                             print("Created Payment Entry for Purchase Invoice: {}, Supplier: {}".format(purchase_invoice, supplier))
+                            continue
 
                         
                         elif purchase_invoice_doc and purchase_invoice_doc.docstatus == 2:
@@ -559,6 +563,9 @@ def cron():
                                 })
                                 file_doc.insert()
 
+                            else:
+                                continue
+
                             if dfm_bank_payment_detail_row:
                                 dfm_bank_payment_detail_doc = frappe.get_doc("DFM Bank Payment Log Detail",
                                                                                 dfm_bank_payment_detail_row[1])
@@ -568,6 +575,8 @@ def cron():
                                 dfm_bank_payment_detail_doc.receive_file_name = file_name
                                 dfm_bank_payment_detail_doc.receive_date = frappe.utils.now_datetime()
                                 dfm_bank_payment_detail_doc.save()
+                            else:
+                                continue
 
 
                             frappe.delete_doc("File", file_name)
@@ -575,6 +584,7 @@ def cron():
                             print("Created draft Payment Entry for cancelled Purchase Invoice: {}, Supplier: {}".format(purchase_invoice, supplier))
                         else:
                             print("Purchase Invoice not found or not in valid docstatus")
+                            continue
 
 
 
@@ -594,6 +604,8 @@ def cron():
                                 "folder": "Home"  # Specify the folder where you want to store the file
                             })
                             file_doc.insert()
+                        else:
+                            continue
 
                         # Perform processing for "C" type
                         print("Processing for C type")
@@ -606,10 +618,18 @@ def cron():
                             dfm_bank_payment_detail_doc.receive_date = frappe.utils.now_datetime()
                             dfm_bank_payment_detail_doc.save()
 
+                        else:
+                            continue
+
                         frappe.delete_doc("File", file_name)
+                        
 
                     else:
                         print("Unknown processing type:", processing_type)
+                        continue
+                else:
+                        continue
+                
 
 
         except Exception as e:
