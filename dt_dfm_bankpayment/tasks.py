@@ -354,6 +354,7 @@ def cron():
 
     ftp = FTP(server_address)
     ftp.login(user=user, passwd=password)
+    ftp.set_pasv(False)
 
     # List all files in the FTP server directory
     file_list = ftp.nlst()

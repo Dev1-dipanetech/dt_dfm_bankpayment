@@ -8,6 +8,7 @@ import os
 import frappe
 from frappe.utils import now
 from frappe.model.document import Document
+import traceback
 
 class DFMBankPayment(Document):
     def before_save(self):
@@ -327,6 +328,7 @@ def generate_text(file_name, file_content, filters=None):
         # Upload the file content to the FTP server
         ftp = FTP(server_address)
         ftp.login(user=user, passwd=password)
+        ftp.set_pasv(False)
 
         file_data = io.BytesIO(file_content.encode('utf-8'))
         ftp.storbinary('STOR ' + file_name, file_data)
@@ -346,6 +348,7 @@ def generate_text(file_name, file_content, filters=None):
         return True
 
     except Exception as e:
+        traceback.print_exc()
         frappe.msgprint(f"Error generating or uploading file: {e}")
         return False
 
