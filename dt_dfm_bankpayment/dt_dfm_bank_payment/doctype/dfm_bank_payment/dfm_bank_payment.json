@@ -97,9 +97,9 @@
   {
    "fieldname": "account_paid_to",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Account Paid To",
-   "options": "Account",
-   "reqd": 1
+   "options": "Account"
   },
   {
    "fieldname": "column_break_qrj3m",
@@ -120,7 +120,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-01 20:25:56.735541",
+ "modified": "2023-10-05 14:34:34.431611",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment",
