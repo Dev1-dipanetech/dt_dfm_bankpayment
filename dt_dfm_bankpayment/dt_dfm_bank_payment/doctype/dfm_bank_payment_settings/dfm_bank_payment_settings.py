@@ -39,11 +39,18 @@ def cron():
     existing_file_names = frappe.get_all("DFM Bank Payment Log", filters={}, fields=["transfer_file_name"])
     existing_file_names = [file["transfer_file_name"] for file in existing_file_names]
 
+    existing_file_names2 = frappe.get_all("DFM Bank Payment Log Detail", filters={}, fields=["receive_file_name"])
+    existing_file_names2 = [file["receive_file_name"] for file in existing_file_names]
+
 
 
     for file_name in file_list:
         if file_name in existing_file_names:
             print("File name {} already exists in DFM Bank Payment Log. Skipping file...".format(file_name))
+            continue
+        
+        if file_name in existing_file_names2:
+            print("File name {} already exists in DFM Bank Payment Log Detail. Skipping file...".format(file_name))
             continue
 
         # local_file_path = os.path.join(local_directory, file_name)
