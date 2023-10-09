@@ -40,7 +40,7 @@ def cron():
     existing_file_names = [file["transfer_file_name"] for file in existing_file_names]
 
     existing_file_names2 = frappe.get_all("DFM Bank Payment Log Detail", filters={}, fields=["receive_file_name"])
-    existing_file_names2 = [file["receive_file_name"] for file in existing_file_names]
+    existing_file_names2 = [file["receive_file_name"] for file in existing_file_names2]
 
 
 
