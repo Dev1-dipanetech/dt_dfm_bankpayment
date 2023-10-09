@@ -1,0 +1,93 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"Z77z0-jwt4\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">DFM Bank Payment</span>\",\"col\":12}},{\"id\":\"F5Hfqgpyzx\",\"type\":\"card\",\"data\":{\"card_name\":\"Transactions\",\"col\":4}},{\"id\":\"5d7fPe91T3\",\"type\":\"card\",\"data\":{\"card_name\":\"Logs & Reports\",\"col\":4}},{\"id\":\"J0f1-i_6fd\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
+ "creation": "2023-10-09 12:08:30.608864",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "expenses",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "DFM Bank",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Transactions",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DFM Bank Payment",
+   "link_count": 0,
+   "link_to": "DFM Bank Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Logs & Reports",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DFM Bank Payment Log",
+   "link_count": 0,
+   "link_to": "DFM Bank Payment Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DFM Bank Payment Status Report",
+   "link_count": 0,
+   "link_to": "DFM Bank Payment Status Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "DFM Bank Payment Settings",
+   "link_count": 0,
+   "link_to": "DFM Bank Payment Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2023-10-09 12:15:01.432071",
+ "modified_by": "Administrator",
+ "module": "DT DFM Bank Payment",
+ "name": "DFM Bank",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 29.0,
+ "shortcuts": [],
+ "title": "DFM Bank"
+}
