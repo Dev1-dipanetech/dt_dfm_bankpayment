@@ -50,6 +50,15 @@ class DFMBankPayment(Document):
                 bank_payment_log_docs = [bp.parent for bp in existing_bank_payment_logs]
                 bank_payment_log_links = ', '.join(f'<a href="/app/dfm-bank-payment-log/{bp}" target="_blank">{bp}</a>' for bp in bank_payment_log_docs)
                 frappe.throw(f"Line item {item.purchase_invoice} is already in process or completed in DFM Bank Payment Log(s): {bank_payment_log_links}")
+        
+        
+        total_allocated_amount = 0.0
+
+        for detail in self.get("dfm_bank_payment_detail"):
+            total_allocated_amount += detail.allocated_amount
+
+        # Set the total_allocated_amount in the main document
+        self.total_allocated_amount = total_allocated_amount
                 
     
     

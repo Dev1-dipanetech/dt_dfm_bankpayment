@@ -21,6 +21,8 @@
   "account_paid_to",
   "section_break_tcp3v",
   "dfm_bank_payment_detail",
+  "section_break_qmzzz",
+  "total_allocated_amount",
   "amended_from"
  ],
  "fields": [
@@ -115,12 +117,28 @@
    "label": "Company Bank Account",
    "options": "Bank Account",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_qmzzz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_allocated_amount",
+   "fieldtype": "Currency",
+   "label": "Total Allocated Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2023-10-05 14:34:34.431611",
+ "links": [
+  {
+   "group": "DFM Bank Payment Log",
+   "link_doctype": "DFM Bank Payment Log",
+   "link_fieldname": "dfm_bank_payment"
+  }
+ ],
+ "modified": "2023-10-13 15:45:12.487438",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment",
