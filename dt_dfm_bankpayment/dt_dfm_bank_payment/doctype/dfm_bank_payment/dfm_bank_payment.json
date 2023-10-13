@@ -123,6 +123,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "total_allocated_amount",
    "fieldtype": "Currency",
    "label": "Total Allocated Amount",
@@ -138,7 +139,7 @@
    "link_fieldname": "dfm_bank_payment"
   }
  ],
- "modified": "2023-10-13 15:45:12.487438",
+ "modified": "2023-10-13 17:13:55.194206",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment",

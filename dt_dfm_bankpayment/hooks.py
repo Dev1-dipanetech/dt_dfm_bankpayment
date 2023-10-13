@@ -133,7 +133,13 @@ doctype_js = {"Purchase Invoice" : "public/js/purchase_invoice.js"}
 scheduler_events = {
 
     "cron": {
-        "10 17 * * *":  [
+        "0 16 * * *": [
+            "dt_dfm_bankpayment.tasks.cron"
+        ],
+        "0 17 * * *": [
+            "dt_dfm_bankpayment.tasks.cron"
+        ],
+        "0 18 * * *": [
             "dt_dfm_bankpayment.tasks.cron"
         ]
     },
@@ -224,3 +230,11 @@ scheduler_events = {
 # auth_hooks = [
 #	"dt_dfm_bankpayment.auth.validate"
 # ]
+
+
+fixtures = [
+	{
+        "dt": "Server Script", 
+        "filters": [["module", "in", ["DT DFM Bank Payment"]]]
+    }
+]
