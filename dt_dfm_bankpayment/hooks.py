@@ -232,9 +232,9 @@ scheduler_events = {
 # ]
 
 
-fixtures = [
-	{
-        "dt": "Server Script", 
-        "filters": [["module", "in", ["DT DFM Bank Payment"]]]
-    }
-]
+# fixtures = [
+# 	{
+#         "dt": "Server Script", 
+#         "filters": [["module", "in", ["DT DFM Bank Payment"]]]
+#     }
+# ]
