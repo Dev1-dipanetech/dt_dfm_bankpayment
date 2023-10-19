@@ -248,12 +248,52 @@ frappe.ui.form.on('DFM Bank Payment', {
 
 
 
+// function splitIntoBatches(data, batchSize) {
+//     var batches = [];
+//     var currentBatch = [];
+//     var currentBatchAmount = 0;
+
+//     data.sort(function(a, b) {
+//         return (a.allocated_amount || 0) - (b.allocated_amount || 0);
+//     });
+
+//     data.forEach(function(row) {
+//         var allocatedAmount = row.allocated_amount || 0;
+
+//         if ((currentBatchAmount + allocatedAmount) <= batchSize) {
+//             // Add to the current batch
+//             currentBatch.push(row);
+//             currentBatchAmount += allocatedAmount;
+//         } else {
+//             // Push the current batch and start a new one
+//             batches.push(currentBatch);
+//             currentBatch = [row];
+//             currentBatchAmount = allocatedAmount;
+//         }
+//     });
+
+//     if (currentBatch.length > 0) {
+//         batches.push(currentBatch);
+//     }
+
+//     return batches;
+// }
+
+
+
+
+
+// new coding
 function splitIntoBatches(data, batchSize) {
     var batches = [];
     var currentBatch = [];
     var currentBatchAmount = 0;
 
+    // Sort the data first by supplier, then by allocated amount
     data.sort(function(a, b) {
+        if (a.supplier !== b.supplier) {
+            return a.supplier.localeCompare(b.supplier);
+        }
         return (a.allocated_amount || 0) - (b.allocated_amount || 0);
     });
 
@@ -283,60 +323,151 @@ function splitIntoBatches(data, batchSize) {
 
 
 
+// function getBatchData(batch, fileName, doc) {
+    
+//     console.log(batch, fileName)
+//     var batchData = '';
+//     var batch_amount = getTotalAllocatedAmount(batch);
+//     var batch_length = batch.length;
+
+//     batchData += 'H~DUMMY~~~~' + fileName + '~' + '\n' +
+//         'B~' + batch_length + '~' + batch_amount + '~' + '20130625_HAS03' + '~' +
+//         (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
+//         '~NETPAY' + '\n';
+
+//     batch.forEach(function(row) {
+//         batchData += 'D~~' +
+//             'NEFT~' +
+//             (row.allocated_amount.toFixed(2)  || '') +
+//             '~' +
+//             (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
+//             '~' +
+//             (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
+//             '~~~~~~' +
+//             'M~~' +
+//             (row.supplier || '') +
+//             '~' +
+//             (row.supplier_bank || '') +
+//             '~' +
+//             (row.supplier_bank_ifsc_code || '') +
+//             '~' +
+//             (row.supplier_account_no || '') +
+//             '~~~' +
+//             (row.supplier_address_line_1 || '') +
+//             '~' +
+//             (row.supplier_address_line_2 || '') +
+//             '~~~~' +
+//             (row.supplier_city || '') +
+//             '~' +
+//             (row.supplier_zipcode || '') +
+//             '~' +
+//             (row.supplier_state || '') +
+//             '~' +
+//             (row.supplier_email || '') +
+//             '~' +
+//             (row.supplier_mobile || '') +
+//             '~' +
+//             // (row.purchase_invoice || '') +
+//             '~~~~' +
+//             '\n';
+        
+//         batchData += 'E~' + (row.purchase_invoice || '') + '~~~~~~~~~' + '\n';
+//     });
+
+//     batchData += 'T~' + batch_length + '~' + batch_amount;
+
+//     return batchData;
+// }
+
+
+
+
+
+// new coding
 function getBatchData(batch, fileName, doc) {
-
     var batchData = '';
-    var batch_amount = getTotalAllocatedAmount(batch);
-    var batch_length = batch.length;
-
-    batchData += 'H~DUMMY~~~~' + fileName + '~' + '\n' +
-        'B~' + batch_length + '~' + batch_amount + '~' + '20130625_HAS03' + '~' +
-        (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
-        '~NETPAY' + '\n';
-
+    var supplierGroups = {};
+    
     batch.forEach(function(row) {
+        var supplier = row.supplier;
+        
+        if (supplier in supplierGroups) {
+            supplierGroups[supplier].push(row);
+        } else {
+            supplierGroups[supplier] = [row];
+        }
+    });
+    
+
+    var batch_length = Object.keys(supplierGroups).length; 
+
+    var batch_amount = batch.reduce(function(sum, row) {
+        return sum + (parseFloat(row.allocated_amount) || 0);
+    }, 0);
+    
+    
+    batchData += 'H~DUMMY~~~~' + fileName + '~' + '\n' +
+    'B~' + batch_length + '~' + batch_amount + '~' + '20130625_HAS03' + '~' +
+    (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
+    '~NETPAY' + '\n';
+
+    for (var supplier in supplierGroups) {
+        var supplierRows = supplierGroups[supplier];
+
+        var totalAllocatedAmount = supplierRows.reduce(function(sum, row) {
+            return sum + (parseFloat(row.allocated_amount) || 0);
+        }, 0);
+
         batchData += 'D~~' +
             'NEFT~' +
-            (row.allocated_amount.toFixed(2)  || '') +
+            totalAllocatedAmount.toFixed(2) +
             '~' +
             (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
             '~' +
             (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
             '~~~~~~' +
             'M~~' +
-            (row.supplier || '') +
+            (supplierRows[0].supplier || '') +
             '~' +
-            (row.supplier_bank || '') +
+            (supplierRows[0].supplier_bank || '') +
             '~' +
-            (row.supplier_bank_ifsc_code || '') +
+            (supplierRows[0].supplier_bank_ifsc_code || '') +
             '~' +
-            (row.supplier_account_no || '') +
+            (supplierRows[0].supplier_account_no || '') +
             '~~~' +
-            (row.supplier_address_line_1 || '') +
+            (supplierRows[0].supplier_address_line_1 || '') +
             '~' +
-            (row.supplier_address_line_2 || '') +
+            (supplierRows[0].supplier_address_line_2 || '') +
             '~~~~' +
-            (row.supplier_city || '') +
+            (supplierRows[0].supplier_city || '') +
             '~' +
-            (row.supplier_zipcode || '') +
+            (supplierRows[0].supplier_zipcode || '') +
             '~' +
-            (row.supplier_state || '') +
+            (supplierRows[0].supplier_state || '') +
             '~' +
-            (row.supplier_email || '') +
+            (supplierRows[0].supplier_email || '') +
             '~' +
-            (row.supplier_mobile || '') +
+            (supplierRows[0].supplier_mobile || '') +
             '~' +
-            // (row.purchase_invoice || '') +
+            // (supplierRows[0].purchase_invoice || '') +
             '~~~~' +
             '\n';
-        
-        batchData += 'E~' + (row.purchase_invoice || '') + '~~~~~~~~~' + '\n';
-    });
+
+        supplierRows.forEach(function(row, index) {
+            var purchaseInvoice = row.purchase_invoice || '';
+            var allocatedAmount = parseFloat(row.allocated_amount) || 0;
+
+            batchData += 'E~' + (index + 1) + '~' + purchaseInvoice + '~' + allocatedAmount.toFixed(2) + '~' + fileName +'~~~~~~' + '\n';
+        });
+    }
 
     batchData += 'T~' + batch_length + '~' + batch_amount;
 
     return batchData;
 }
+
+
+
 
 function getTotalAllocatedAmount(batch) {
     var totalAmount = 0;
@@ -345,8 +476,6 @@ function getTotalAllocatedAmount(batch) {
     });
     return totalAmount.toFixed(2);
 }
-
-
 
 
 

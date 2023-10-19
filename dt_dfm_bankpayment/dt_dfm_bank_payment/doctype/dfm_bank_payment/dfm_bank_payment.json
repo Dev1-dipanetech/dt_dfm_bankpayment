@@ -139,7 +139,7 @@
    "link_fieldname": "dfm_bank_payment"
   }
  ],
- "modified": "2023-10-16 11:16:55.754049",
+ "modified": "2023-10-18 12:04:06.202175",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment",
@@ -155,6 +155,7 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
