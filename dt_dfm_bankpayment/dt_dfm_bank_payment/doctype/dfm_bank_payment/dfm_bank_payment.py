@@ -369,7 +369,7 @@ def generate_text(file_name, file_content, filters=None):
         return True
 
     except Exception as e:
-        traceback.print_exc()
+        # traceback.print_exc()
         frappe.msgprint(f"Error generating or uploading file: {e}")
         return False
 
