@@ -26,8 +26,10 @@ def cron():
     # Retrieve the FTP server details from the settings document
     server_address = settings.ftp_server_address
     user = settings.ftp_user
-    password = settings.ftp_password
+    password = settings.get_password('ftp_password')
     port = settings.ftp_port
+
+    folder = settings.ftp_folder
 
     ftp = FTP()
     ftp.connect(server_address, port)
@@ -35,7 +37,11 @@ def cron():
     ftp.set_pasv(False)
 
     # List all files in the FTP server directory
-    file_list = ftp.nlst()
+    if folder:
+        ftp.cwd(folder)
+        file_list = ftp.nlst()
+    else:
+        file_list = ftp.nlst()
 
     # Get the list of existing file names in DFM Bank Payment Log
     existing_file_names = frappe.get_all("DFM Bank Payment Log", filters={}, fields=["transfer_file_name"])
