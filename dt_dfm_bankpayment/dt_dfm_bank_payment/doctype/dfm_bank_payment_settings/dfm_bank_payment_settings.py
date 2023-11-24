@@ -27,8 +27,10 @@ def cron():
     server_address = settings.ftp_server_address
     user = settings.ftp_user
     password = settings.ftp_password
+    port = settings.ftp_port
 
-    ftp = FTP(server_address)
+    ftp = FTP()
+    ftp.connect(server_address, port)
     ftp.login(user=user, passwd=password)
     ftp.set_pasv(False)
 

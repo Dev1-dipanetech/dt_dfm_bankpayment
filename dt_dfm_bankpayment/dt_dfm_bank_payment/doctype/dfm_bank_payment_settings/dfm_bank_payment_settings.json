@@ -9,6 +9,7 @@
  "field_order": [
   "ftp_setup_section",
   "ftp_server_address",
+  "ftp_port",
   "column_break_ifupl",
   "ftp_user",
   "ftp_password",
@@ -50,12 +51,17 @@
    "fieldname": "ftp_setup_section",
    "fieldtype": "Section Break",
    "label": "FTP Setup"
+  },
+  {
+   "fieldname": "ftp_port",
+   "fieldtype": "Int",
+   "label": "FTP Port"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-09-14 11:50:37.954840",
+ "modified": "2023-11-24 12:52:38.644315",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Settings",
