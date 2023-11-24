@@ -353,7 +353,7 @@ def cron():
     password = settings.get_password('ftp_password')
     port = settings.ftp_port
 
-    folder = settings.ftp_folder
+    folder = settings.ftp_return_folder
 
     ftp = FTP()
     ftp.connect(server_address, port)

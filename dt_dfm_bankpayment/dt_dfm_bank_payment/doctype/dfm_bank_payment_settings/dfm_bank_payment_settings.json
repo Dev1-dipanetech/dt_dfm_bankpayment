@@ -10,10 +10,11 @@
   "ftp_setup_section",
   "ftp_server_address",
   "ftp_port",
-  "ftp_folder",
+  "ftp_upload_folder",
   "column_break_ifupl",
   "ftp_user",
   "ftp_password",
+  "ftp_return_folder",
   "section_break_zuxnj",
   "dfm_bank_payment_gl_setup"
  ],
@@ -59,15 +60,20 @@
    "label": "FTP Port"
   },
   {
-   "fieldname": "ftp_folder",
+   "fieldname": "ftp_return_folder",
    "fieldtype": "Data",
-   "label": "FTP Folder"
+   "label": "FTP Return Folder"
+  },
+  {
+   "fieldname": "ftp_upload_folder",
+   "fieldtype": "Data",
+   "label": "FTP Upload Folder"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-11-24 16:13:16.892806",
+ "modified": "2023-11-24 16:30:53.166104",
  "modified_by": "Administrator",
  "module": "DT DFM Bank Payment",
  "name": "DFM Bank Payment Settings",

@@ -334,15 +334,25 @@ def generate_text(file_name, file_content, filters=None):
         settings = frappe.get_single("DFM Bank Payment Settings")
         server_address = settings.ftp_server_address
         user = settings.ftp_user
-        password = settings.ftp_password
+        password = settings.get_password('ftp_password')
+        port = settings.ftp_port
+
+        folder = settings.ftp_upload_folder
 
         # Upload the file content to the FTP server
-        ftp = FTP(server_address)
+        ftp = FTP()
+        ftp.connect(server_address, port)
         ftp.login(user=user, passwd=password)
         ftp.set_pasv(False)
 
         file_data = io.BytesIO(file_content.encode('utf-8'))
-        ftp.storbinary('STOR ' + file_name, file_data)
+
+        if folder:
+            ftp.cwd(folder)
+            ftp.storbinary('STOR ' + file_name, file_data)
+        else:
+            ftp.storbinary('STOR ' + file_name, file_data)
+        
 
         ftp.quit()
 
