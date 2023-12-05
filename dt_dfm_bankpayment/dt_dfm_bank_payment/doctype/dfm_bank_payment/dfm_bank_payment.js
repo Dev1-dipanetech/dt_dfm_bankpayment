@@ -418,8 +418,20 @@ function getBatchData(batch, fileName, doc) {
             return sum + (parseFloat(row.allocated_amount) || 0);
         }, 0);
 
-        batchData += 'D~~' +
-            'NEFT~' +
+
+        batchData += 'D~'
+
+        supplierRows.forEach(function(row, index) {
+            var purchaseInvoice = row.purchase_invoice || '';
+        
+            batchData += purchaseInvoice;
+        
+            if (index < supplierRows.length - 1) {
+                batchData += ',';
+            }
+        });
+
+        batchData += '~NEFT~' +
             totalAllocatedAmount.toFixed(2) +
             '~' +
             (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
@@ -429,7 +441,8 @@ function getBatchData(batch, fileName, doc) {
             'M~~' +
             (supplierRows[0].supplier || '') +
             '~' +
-            (supplierRows[0].supplier_bank || '') +
+            // (supplierRows[0].supplier_bank || '') +
+            '~' +
             '~' +
             (supplierRows[0].supplier_bank_ifsc_code || '') +
             '~' +
