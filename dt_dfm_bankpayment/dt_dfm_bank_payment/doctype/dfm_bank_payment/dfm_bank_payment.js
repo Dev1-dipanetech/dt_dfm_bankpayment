@@ -411,6 +411,8 @@ function getBatchData(batch, fileName, doc) {
     (frappe.datetime.str_to_user(doc.due_date).replace(/-/g, '/') || '') +
     '~NETPAY' + '\n';
 
+    var counter = 1;
+
     for (var supplier in supplierGroups) {
         var supplierRows = supplierGroups[supplier];
 
@@ -419,7 +421,7 @@ function getBatchData(batch, fileName, doc) {
         }, 0);
 
 
-        batchData += 'D~' + fileName
+        batchData += 'D~' + doc.name+ '-' +counter
 
         // supplierRows.forEach(function(row, index) {
         //     var purchaseInvoice = row.purchase_invoice || '';
@@ -474,6 +476,8 @@ function getBatchData(batch, fileName, doc) {
     }
 
     batchData += 'T~' + batch_length + '~' + batch_amount;
+    
+    counter++;
 
     return batchData;
 }
