@@ -9,6 +9,8 @@ import frappe
 from frappe.utils import now
 from frappe.model.document import Document
 import traceback
+import pysftp
+
 
 class DFMBankPayment(Document):
     def before_save(self):
@@ -282,50 +284,6 @@ def get_supplier_bank_account(supplier):
 
 
 
-# @frappe.whitelist()
-# def generate_text(file_name, filters=None):
-#     try:
-#         # Fetch settings from DFM Bank Payment Settings doctype
-#         settings = frappe.get_single("DFM Bank Payment Settings")
-#         file_path = settings.file_path
-#         server_address = settings.ftp_server_address
-#         user = settings.ftp_user
-#         password = settings.ftp_password
-
-#         # Construct the full file path
-#         file_path = os.path.join(file_path, file_name)
-
-#         # Upload the file to the FTP server
-#         ftp = FTP(server_address)
-#         ftp.login(user=user, passwd=password)
-
-#         with open(file_path, 'rb') as file:
-#             ftp.storbinary('STOR ' + file_name, file)
-
-#         ftp.quit()
-
-#         # Read the contents of the file
-#         with open(file_path, 'r') as file:
-#             file_content = file.read()
-
-#         # Create a new File record in Frappe
-#         file_doc = frappe.get_doc({
-#             "doctype": "File",
-#             "file_name": file_name,
-#             "content": file_content,
-#             "is_private": 1,  # Adjust this based on your requirement
-#             "folder": "Home"  # Specify the folder where you want to store the file
-#         })
-#         file_doc.insert()
-
-#         return True
-
-#     except Exception as e:
-#         frappe.msgprint(f"Error generating or uploading file: {e}")
-#         return False
-
-
-
 
 @frappe.whitelist()
 def generate_text(file_name, file_content, filters=None):
@@ -339,22 +297,16 @@ def generate_text(file_name, file_content, filters=None):
 
         folder = settings.ftp_upload_folder
 
-        # Upload the file content to the FTP server
-        ftp = FTP()
-        ftp.connect(server_address, port)
-        ftp.login(user=user, passwd=password)
-        ftp.set_pasv(False)
-
-        file_data = io.BytesIO(file_content.encode('utf-8'))
-
-        if folder:
-            ftp.cwd(folder)
-            ftp.storbinary('STOR ' + file_name, file_data)
-        else:
-            ftp.storbinary('STOR ' + file_name, file_data)
+        # Upload the file content to the SFTP server
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys = None  # Disable host key checking (use with caution)
+        with pysftp.Connection(server_address, port=port, username=user, password=password, cnopts=cnopts) as sftp:
+            sftp.cwd(folder)
+            file_data = io.BytesIO(file_content.encode('utf-8'))
+            sftp.putfo(file_data, file_name)
         
 
-        ftp.quit()
+        sftp.close()
 
         # Create a new File record in Frappe (you may want to adjust this part)
         file_doc = frappe.get_doc({
@@ -372,6 +324,62 @@ def generate_text(file_name, file_content, filters=None):
         # traceback.print_exc()
         frappe.msgprint(f"Error generating or uploading file: {e}")
         return False
+
+
+
+
+
+
+
+
+
+# @frappe.whitelist()
+# def generate_text(file_name, file_content, filters=None):
+#     try:
+#         # Fetch settings from DFM Bank Payment Settings doctype
+#         settings = frappe.get_single("DFM Bank Payment Settings")
+#         server_address = settings.ftp_server_address
+#         user = settings.ftp_user
+#         password = settings.get_password('ftp_password')
+#         port = settings.ftp_port
+
+#         folder = settings.ftp_upload_folder
+
+#         # Upload the file content to the FTP server
+#         ftp = FTP()
+#         ftp.connect(server_address, port)
+#         ftp.login(user=user, passwd=password)
+#         ftp.set_pasv(False)
+
+#         file_data = io.BytesIO(file_content.encode('utf-8'))
+
+#         if folder:
+#             ftp.cwd(folder)
+#             ftp.storbinary('STOR ' + file_name, file_data)
+#         else:
+#             ftp.storbinary('STOR ' + file_name, file_data)
+        
+
+#         ftp.quit()
+
+#         # Create a new File record in Frappe (you may want to adjust this part)
+#         file_doc = frappe.get_doc({
+#             "doctype": "File",
+#             "file_name": file_name,
+#             "content": file_content,
+#             "is_private": 1,  # Adjust this based on your requirement
+#             "folder": "Home"  # Specify the folder where you want to store the file
+#         })
+#         file_doc.insert()
+
+#         return True
+
+#     except Exception as e:
+#         # traceback.print_exc()
+#         frappe.msgprint(f"Error generating or uploading file: {e}")
+#         return False
+
+
 
 
 
