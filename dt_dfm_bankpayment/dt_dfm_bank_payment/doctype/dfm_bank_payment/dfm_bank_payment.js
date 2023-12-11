@@ -473,11 +473,11 @@ function getBatchData(batch, fileName, doc) {
 
             batchData += 'E~' + (index + 1) + '~' + purchaseInvoice + '~' + allocatedAmount.toFixed(2) + '~' + fileName +'~~~~~~' + '\n';
         });
+
+        counter++;
     }
 
     batchData += 'T~' + batch_length + '~' + batch_amount;
-    
-    counter++;
 
     return batchData;
 }
