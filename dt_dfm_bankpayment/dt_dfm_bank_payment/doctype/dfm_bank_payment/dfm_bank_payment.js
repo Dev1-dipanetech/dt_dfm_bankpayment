@@ -421,7 +421,7 @@ function getBatchData(batch, fileName, doc) {
         }, 0);
 
 
-        batchData += 'D~' + doc.name+ '-' +counter
+        batchData += 'D~' + fileName.replace("_batch_","_").replace(".txt","_D")+counter 
 
         // supplierRows.forEach(function(row, index) {
         //     var purchaseInvoice = row.purchase_invoice || '';
