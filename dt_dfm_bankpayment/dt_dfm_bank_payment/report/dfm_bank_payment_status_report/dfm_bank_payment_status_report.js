@@ -78,13 +78,13 @@ frappe.query_reports["DFM Bank Payment Status Report"] = {
 
 
 		if (column.fieldname == "status" && data && data.status  === "In Process at Bank") {
-			value = "<span style='color:yellow'>" + value + "</span>";
+			value = "<span style='color:orange; font-weight:bold'>" + value + "</span>";
 		}
 		else if (column.fieldname == "status" && data && data.status  === "Transferred by Bank") {
-			value = "<span style='color:green'>" + value + "</span>";
+			value = "<span style='color:green; font-weight:bold'>" + value + "</span>";
 		}
 		else if (column.fieldname == "status" && data && data.status  === "Rejected by Bank") {
-			value = "<span style='color:red'>" + value + "</span>";
+			value = "<span style='color:red; font-weight:bold'>" + value + "</span>";
 		}
 
 	

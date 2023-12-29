@@ -99,6 +99,55 @@ frappe.ui.form.on('DFM Bank Payment', {
 
 	},
 
+    onload: function(frm){
+        if(frm.doc.company){
+            frappe.call({
+                method: 'frappe.client.get_value',
+                args: {
+                    'doctype': 'Bank Account',
+                    'filters': {'company': frm.doc.company, 'is_company_account': 1, 'is_default': 1},
+                    'fieldname': [
+                        'name'
+                    ]
+                },
+                callback: function(r) {
+                    if (!r.exc) {
+                        var default_bank_accoount = r.message.name;
+
+                        if(default_bank_accoount){
+                            frm.set_value("company_bank_account", default_bank_accoount)
+                        }
+                    }
+                }
+            });
+        }
+
+    },
+
+    company: function(frm){
+        if(frm.doc.company){
+            frappe.call({
+                method: 'frappe.client.get_value',
+                args: {
+                    'doctype': 'Bank Account',
+                    'filters': {'company': frm.doc.company, 'is_company_account': 1, 'is_default': 1},
+                    'fieldname': [
+                        'name'
+                    ]
+                },
+                callback: function(r) {
+                    if (!r.exc) {
+                        var default_bank_accoount = r.message.name;
+
+                        if(default_bank_accoount){
+                            frm.set_value("company_bank_account", default_bank_accoount)
+                        }
+                    }
+                }
+            });
+        }
+    },
+
     
 
 	get_outstanding_invoices: function(frm) {
